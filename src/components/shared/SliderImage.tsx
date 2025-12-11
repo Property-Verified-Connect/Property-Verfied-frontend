@@ -36,7 +36,7 @@ export default function SliderImage({Image , setImageLoaded}) {
                 <img
                 src={val}
                 onLoad={() => setImageLoaded(true)}
-                className="w-full z-10 h-80   object-cover rounded-2xl shadow-lg"
+                className="w-full z-10 h-80 object-cover rounded-2xl shadow-lg"
               />
             </SwiperSlide>
 
