@@ -10,6 +10,7 @@ import BudgetResultComponent from "@/components/layout/AI-Layout/BudgetResultCom
 import CategoryResultComponent from "@/components/layout/AI-Layout/CategoryResultComponent";
 import RentResultComponent from "@/components/layout/AI-Layout/RentResultComponent";
 import axios from "axios";
+import { getCookieValue } from "@/function/cookies";
 
 
 const BaseURL = process.env.NEXT_PUBLIC_API_URL 
@@ -130,7 +131,13 @@ export default function AIAssistantChat() {
 
       const response = await axios.post( `${BaseURL}/api/ai/genrate`,
         {mode , answers , questions },
-        {withCredentials:true}
+        {
+          headers: {
+                    "Authorization": `Bearer ${getCookieValue()}`, 
+                    "Content-Type": "application/json",
+                  }
+
+        }
     ) 
 
     

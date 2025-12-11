@@ -6,58 +6,75 @@ export function middleware(req: NextRequest) {
 
   console.log("🔵 Incoming Request:", pathname);
 
-  // Read client-side cookie
+  // Read cookies - try both possible cookie names
   const clientTokenUser = req.cookies.get("client_token_user")?.value;
 
   console.log("🔍 Cookies in middleware:", {
     clientTokenUserExists: !!clientTokenUser,
-    tokenValue: clientTokenUser || "❌ No token"
+    tokenValue: clientTokenUser || "❌ No token",
+    allCookies: req.cookies.getAll().map(c => c.name) // Debug: see all cookies
   });
 
-  // -------------------------------
-  // PUBLIC ROUTES
-  // -------------------------------
-  const PUBLIC_ROUTES = [
-    "/",           // home page
-    "/favicon.ico",
-  ];
-
-  const isPublic = 
-    PUBLIC_ROUTES.includes(pathname) ||
-    pathname.startsWith("/auth") ||     // allow /auth and /auth/login
-    pathname.startsWith("/_next") ||    // nextjs internals
-    pathname.startsWith("/api") ||      // allow all API routes
-    pathname.startsWith("/static");     // optional
+  // Public routes - more specific matching
+  const isPublicRoute =
+    pathname === "/" ||
+    pathname.startsWith("/auth/") ||
+    pathname.startsWith("/auth") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname.includes(".") || // Any file with extension (images, fonts, etc.)
+    pathname === "/favicon.ico";
 
   console.log("📌 Route check:", {
     pathname,
-    isPublic,
+    isPublicRoute,
   });
 
-  if (isPublic) {
-    console.log("🟢 PUBLIC → allowed");
+  if (isPublicRoute) {
+    console.log("🟢 Public route → allowed");
     return NextResponse.next();
   }
 
-  // -------------------------------
-  // PROTECTED ROUTES
-  // -------------------------------
+  // Protected route: needs client token
   if (!clientTokenUser) {
-    console.log("❌ NO TOKEN → redirecting to /auth/login");
+    console.log("❌ No client_token_partner → redirect to login");
 
     const loginUrl = new URL("/auth/login", req.url);
     loginUrl.searchParams.set("redirect", pathname);
 
-    return NextResponse.redirect(loginUrl);
+    const response = NextResponse.redirect(loginUrl);
+    
+    // IMPORTANT: Add cache control headers to prevent caching
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+
+    return response;
   }
 
-  console.log("🟩 TOKEN FOUND → access granted");
-  return NextResponse.next();
+  // Token exists - allow access
+  console.log("🟩 Token found → access granted");
+  
+  const response = NextResponse.next();
+  
+  // Add cache control headers to prevent stale responses
+  response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  response.headers.set('Pragma', 'no-cache');
+  response.headers.set('Expires', '0');
+  
+  return response;
 }
 
-// ✅ Run middleware for all routes except static assets
+// Simpler matcher configuration that works on Vercel
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(png|jpg|jpeg|gif|svg)).*)",
+    /*
+     * Match all request paths except:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };

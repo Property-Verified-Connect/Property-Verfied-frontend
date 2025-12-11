@@ -4,6 +4,8 @@ import {ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import inter from "@/lib/font/Inter";
+import { INDIAN_CITIES } from "@/function/cities";
+import SliderImage from "../shared/SliderImage";
 
 
 
@@ -32,23 +34,28 @@ export default function PropertyDashboard() {
               <SelectValue placeholder="Not selected" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="nagpur">Nagpur</SelectItem>
-              <SelectItem value="pune">Pune</SelectItem>
-              <SelectItem value="mumbai">Mumbai</SelectItem>
-              <SelectItem value="delhi">Delhi</SelectItem>
+              {
+                INDIAN_CITIES.map((val ,index)=>(
+                  <SelectItem key={index} value={val}>val</SelectItem>
+
+                ))
+              }
+        
             </SelectContent>
           </Select>
         </div>
 
         {/* Property Image */}
-        <div className="rounded-2xl overflow-hidden flex items-center justify-center mb-4">
-          <Image
+        <div className="rounded-2xl w-full h-50 overflow-hidden md:h-96 md:w-[40rem] flex items-center justify-center mb-4">
+          {/* <Image
             src="/image/image-2.jpg"
             alt="Property"
             width={400}
             height={200}
             className="w-full h-48 md:h-96 md:w-[40rem] md:rounded-2xl shadow-md  object-cover"
-          />
+          /> */}
+
+          <SliderImage Image={[ "/image/diaplay.png","/image/image-2.jpg","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3yTPYnP18dd01BjwbyB6cyeSJ1QqJzFLCZw&s","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcqgtsGNO_IfzYM6VPS8lNikw4JWE-gsEBjQ&s"]}/>
         </div>
 
         {/* Features Grid */}

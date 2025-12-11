@@ -10,6 +10,7 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import axios from 'axios';
 import { useRouter } from "next/navigation";
+import { INDIAN_CITIES } from "@/function/cities";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -173,10 +174,13 @@ export default function SignInForm(): JSX.Element {
               <SelectValue placeholder="Select your city" />
             </SelectTrigger>
             <SelectContent >
-              <SelectItem value="Nagpur">Nagpur</SelectItem>
-              <SelectItem value="Mumbai">Mumbai</SelectItem>
-              <SelectItem value="Pune">Pune</SelectItem>
-              <SelectItem value="Delhi">Delhi</SelectItem>
+              {
+                INDIAN_CITIES.map((val , index) =>(
+                  <SelectItem key={index} value={val}>{val}</SelectItem>
+
+                ))
+              }
+  
             </SelectContent>
           </Select>
           {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}

@@ -137,3 +137,61 @@
 .bg-prv{
   background-color: #CDE4F9;
 }
+
+.bg-cvr{
+   background-color:#2396C6;
+
+}
+
+.mySwiper .swiper-pagination-bullet-active {
+  background: #CDE4F9 !important; /* White color for the active dot */
+}
+
+.mySwiper .swiper-button-next,
+.mySwiper .swiper-button-prev {
+  background-color: rgba(255, 255, 255, 0.7); /* White, semi-transparent background */
+  padding: 12px; /* Adds space around the arrow */
+  border-radius: 50%; /* Makes it a circle */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  transition: background-color 0.3s;
+  transform: scale(0.7);
+}
+
+
+#svg {
+ width: 3.25em;
+ transform-origin: center;
+ animation: rotate4 2s linear infinite;
+}
+
+#circle {
+ fill: none;
+ stroke: hsl(214, 97%, 59%);
+ stroke-width: 2;
+ stroke-dasharray: 1, 200;
+ stroke-dashoffset: 0;
+ stroke-linecap: round;
+ animation: dash4 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate4 {
+ 100% {
+  transform: rotate(360deg);
+ }
+}
+
+@keyframes dash4 {
+ 0% {
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+ }
+
+ 50% {
+  stroke-dasharray: 90, 200;
+  stroke-dashoffset: -35px;
+ }
+
+ 100% {
+  stroke-dashoffset: -125px;
+ }
+}

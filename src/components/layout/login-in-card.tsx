@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
@@ -8,7 +8,7 @@ import { Inter } from "next/font/google";
 import GoogleIcon from "../../../public/icons/googleicon";
 import Link from "next/link";
 import axios from "axios";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
 const inter = Inter({
@@ -30,15 +30,15 @@ interface FormErrors {
 
 export default function LoginInForm() {
   const router = useRouter();
-    const BASEURL = process.env.NEXT_PUBLIC_API_URL
+  const BASEURL = process.env.NEXT_PUBLIC_API_URL;
 
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
-    role:"user"
+    role: "user",
   });
 
-   const [loading, setloading] = useState<boolean>(false);
+  const [loading, setloading] = useState<boolean>(false);
 
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -54,7 +54,7 @@ export default function LoginInForm() {
     e.preventDefault();
 
     // Simple validation
-  
+
     const newErrors: FormErrors = {};
 
     if (!formData.email) newErrors.email = "Email is required";
@@ -67,20 +67,27 @@ export default function LoginInForm() {
       try {
         const res = await axios.post(
           `${BASEURL}/api/auth/login`,
-          { email: formData.email, password: formData.password , role:formData.role },
-          { withCredentials: true ,
-            
+          {
+            email: formData.email,
+            password: formData.password,
+            role: formData.role,
+          },
+          {
+            withCredentials: true,
+
             headers: {
-            'Content-Type': 'application/json'
-          } }
-          
+              "Content-Type": "application/json",
+            },
+          }
         );
 
-        Cookies.set("client_token_user",res.data.token, {
-  expires: 1,        // expires in 7 days
-  secure: true,      // only over HTTPS
-  sameSite: "strict"
-});
+        localStorage.clear();
+
+        Cookies.set("client_token_user", res.data.token, {
+          expires: 1, // expires in 7 days
+          secure: true, // only over HTTPS
+          sameSite: "strict",
+        });
 
         alert(res.data.message);
         router.push("/dashboard/user");
@@ -88,13 +95,13 @@ export default function LoginInForm() {
         if (axios.isAxiosError(err)) {
           // AxiosError: may have response.data.error
           alert(err.response?.data?.error ?? err.message);
-                     setloading(false);
+          setloading(false);
         } else if (err instanceof Error) {
           alert(err.message);
-                     setloading(false);
+          setloading(false);
         } else {
           alert(String(err));
-                     setloading(false);
+          setloading(false);
         }
       }
     }
@@ -103,16 +110,33 @@ export default function LoginInForm() {
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-md p-6 w-[95%] md:w-[30rem] bg-white rounded-lg shadow-md">
       <div className="h-20 w-60 m-auto flex items-center justify-center">
-        <Image src="/image/Logo.png" alt="logo" width={140} height={100} className="scale-140" />
+        <Image
+          src="/image/Logo.png"
+          alt="logo"
+          width={140}
+          height={100}
+          className="scale-140"
+        />
       </div>
-      <div className={`${inter.className} flex items-center justify-center flex-col`}>
-        <h2 className={`${inter.className} text-[#247FBA] text-2xl font-bold mb-6 text-center`}>Log in</h2>
-        <p className="-mt-6 text-xs font-bold text-center text-gray-400 mb-3">Login To an Account <br /> to Connect with your interested verified property</p>
+      <div
+        className={`${inter.className} flex items-center justify-center flex-col`}
+      >
+        <h2
+          className={`${inter.className} text-[#247FBA] text-2xl font-bold mb-6 text-center`}
+        >
+          Log in
+        </h2>
+        <p className="-mt-6 text-xs font-bold text-center text-gray-400 mb-3">
+          Login To an Account <br /> to Connect with your interested verified
+          property
+        </p>
       </div>
       <form onSubmit={handleSubmit} className={`${inter.className} space-y-4`}>
         {/* Email */}
         <div>
-          <Label htmlFor="email" className="mb-2 text-[#247FBA]">Email</Label>
+          <Label htmlFor="email" className="mb-2 text-[#247FBA]">
+            Email
+          </Label>
           <Input
             id="email"
             name="email"
@@ -122,12 +146,16 @@ export default function LoginInForm() {
             onChange={handleChange}
             className="w-full"
           />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email}</p>
+          )}
         </div>
 
         {/* Password */}
         <div>
-          <Label htmlFor="password" className="mb-2 text-[#247FBA]">Password</Label>
+          <Label htmlFor="password" className="mb-2 text-[#247FBA]">
+            Password
+          </Label>
           <Input
             id="password"
             name="password"
@@ -136,12 +164,16 @@ export default function LoginInForm() {
             value={formData.password}
             onChange={handleChange}
           />
-          {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          )}
         </div>
 
         <div className="w-full h-5 flex items-center justify-between">
           <div className="flex gap-2">
-            <h1 className={`${inter.className} text-xs font-bold text-gray-400`}>
+            <h1
+              className={`${inter.className} text-xs font-bold text-gray-400`}
+            >
               Remember me
             </h1>
           </div>
@@ -151,15 +183,17 @@ export default function LoginInForm() {
         </div>
 
         {/* Submit Button */}
-        <Button  type="submit" className="group w-full mt-4 bg-[#247FBA] hover:scale-105 hover:bg-white hover:border-2 hover:text-[#247FBA]">
-          {loading ?
-         <div className="flex items-center justify-center  ">
-  <div className="animate-spin rounded-2xl  h-4 w-4 border-b-2 group-hover:border-[#247FBA] border-white"></div>
-</div>
-           :
-          <h1>Login</h1>
-          }
-          
+        <Button
+          type="submit"
+          className="group w-full mt-4 bg-[#247FBA] hover:scale-105 hover:bg-white hover:border-2 hover:text-[#247FBA]"
+        >
+          {loading ? (
+            <div className="flex items-center justify-center  ">
+              <div className="animate-spin rounded-2xl  h-4 w-4 border-b-2 group-hover:border-[#247FBA] border-white"></div>
+            </div>
+          ) : (
+            <h1>Login</h1>
+          )}
         </Button>
       </form>
       <hr className="mt-3" />
@@ -169,7 +203,12 @@ export default function LoginInForm() {
           Google Login
         </Button>
       </div>
-      <p className="mt-5 text-xs font-bold text-center text-gray-400">Don &apos t have an Account, <Link href={"/auth/sign-in"}><span className="hover:underline"> Sign-up</span></Link></p>
+      <p className="mt-5 text-xs font-bold text-center text-gray-400">
+        Don &apos t have an Account,{" "}
+        <Link href={"/auth/sign-in"}>
+          <span className="hover:underline"> Sign-up</span>
+        </Link>
+      </p>
     </div>
   );
 }
