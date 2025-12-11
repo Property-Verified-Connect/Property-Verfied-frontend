@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import { Search, ChevronRight, ArrowLeft } from "lucide-react";
+import { Search, ChevronRight, ArrowLeft, Filter, Building, Grid, House, TreePalm } from "lucide-react";
 import Nav from "@/components/layout/nav";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -132,38 +132,51 @@ const Page = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex w-11/12 max-w-md justify-between items-center mb-4">
-          <Button
+        <div className="flex w-11/12 max-w-md justify-between gap-3 items-center mb-4">
+         
+         <div  className="flex gap-1 ">
+            <Button
             variant="outline"
             className="text-sm bg-white shadow px-3 py-1 rounded-full"
             onClick={handleReset}
           >
+          <Filter/>
+          </Button>
+          <Button
+            variant="outline"
+            className="text-sm bg-white font-semibold shadow px-3 py-1 rounded-full"
+            onClick={handleReset}
+          >
             Reset
           </Button>
+
+         </div>
           <div className="flex items-center gap-2">
             {/* Property Type Select */}
             <Select value={propertyType} onValueChange={setPropertyType}>
-              <SelectTrigger className="w-[140px] text-sm bg-white shadow rounded-full">
+              <SelectTrigger className="w-[120px] text-sm bg-white shadow rounded-full">
                 <SelectValue placeholder="Property Type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="apartment">Apartment</SelectItem>
-                <SelectItem value="plot / land">Plot / Land </SelectItem>
-                <SelectItem value="independent house / villa">Independent House / Villa </SelectItem>
-                <SelectItem value="farmhouse">Farmhouse</SelectItem>
+                <SelectItem value="apartment"><Building size={10}/> Apartment</SelectItem>
+                <SelectItem value="plot / land"> <Grid size={10}/>Plot / Land </SelectItem>
+                <SelectItem value="independent house / villa"> <House size={10}/>Independent House / Villa </SelectItem>
+                <SelectItem value="farmhouse"><TreePalm size={10}/> Farmhouse</SelectItem>
               </SelectContent>
             </Select>
 
             {/* Configuration Select */}
             <Select value={configuration} onValueChange={setConfiguration}>
-              <SelectTrigger className="w-[130px] text-sm bg-white shadow rounded-full">
+              <SelectTrigger className="w-[90px] text-sm bg-white shadow rounded-full">
                 <SelectValue placeholder="Configuration" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
                 <SelectItem value="sell">Sell</SelectItem>
-                <SelectItem value="rent">Rent</SelectItem>
+                <SelectItem value="rent / lease">Rent / Lease</SelectItem>
+                    <SelectItem value="paying guest">Paying Guest</SelectItem>
+                       <SelectItem value="resell">Resell</SelectItem>
               </SelectContent>
             </Select>
           </div>
