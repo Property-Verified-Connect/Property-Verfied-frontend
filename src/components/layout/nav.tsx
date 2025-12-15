@@ -38,7 +38,7 @@ function Nav() {
        <h1>Order</h1>
      </div>
      <div className='flex gap-3 items-center '>
-      <Bell/>
+  
 
 
 <div className='h-10 w-10 bg-[#2396C6] text-white  flex items-center justify-center  border-2  rounded-full'>

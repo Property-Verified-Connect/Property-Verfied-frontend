@@ -1,10 +1,23 @@
-import { Heart, MapPin, Calendar, Clock, Phone, Mail, Icon, Star, ChevronRight, Delete, Trash, Building, House, Square, Grid2X2, HeartIcon } from 'lucide-react'
+"use client"
+import { Heart, MapPin, Calendar, Clock, Phone, Mail, Icon, Star, ChevronRight, Delete, Trash, Building, House, Square, Grid2X2, HeartIcon, Trash2 } from 'lucide-react'
 import React from 'react'
 import inter from '@/lib/font/Inter'
 import { motion } from "framer-motion" 
 import Link from 'next/link'
 import { Skeleton } from '../ui/skeleton'
 import SliderImage from './sliderImage'
+import { useRouter } from 'next/navigation'
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { getCookieValue } from '@/function/cookies'
+import axios from 'axios'
 
 // Define the types for the property and its nested objects
 interface Property {
@@ -13,16 +26,20 @@ interface Property {
   visiting_date?: string;
   visiting_time?: string;
   created_at: string;
- 
 }
+ 
+const BaseUrl = process.env.NEXT_PUBLIC_API_URL
 
 interface BookingCardsProps {
   property: Property;
   type: 'partner' | 'admin';
+  mode:string
 }
 
-function PropertyCards2({ property, type }: BookingCardsProps) {
+function PropertyCards2({ property, mode  }: BookingCardsProps) {
   // Format date helper
+
+   const router = useRouter();
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -38,6 +55,103 @@ function PropertyCards2({ property, type }: BookingCardsProps) {
     }
   };
 
+
+const handleAddToWishlist = async (propertyId: string ) => {
+  try {
+    if (!propertyId) {
+      throw new Error("Property ID is missing");
+    }
+
+    const response = await axios.post(
+      `${BaseUrl}/api/user/wishlist/add`,
+      { propertyId },
+      {
+        headers: {
+          Authorization: `Bearer ${getCookieValue()}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log(response.data.message);
+    
+    alert(response.data.message);
+    router.push("/dashboard/user/wishlist")
+
+  } catch (error: any) {
+    // Axios-specific error
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        // Backend responded with error status
+        const message =
+          error.response.data?.message || "Something went wrong";
+        console.error("API Error:", message);
+        alert(message);
+      } else if (error.request) {
+        // Request made but no response
+        console.error("No response from server");
+        alert("Server not responding. Please try again later.");
+      } else {
+        // Axios setup error
+        console.error("Axios Error:", error.message);
+        alert("Request failed. Please try again.");
+      }
+    } else {
+      // Non-Axios error
+      console.error("Unexpected Error:", error);
+      alert("Unexpected error occurred.");
+    }
+  }
+};
+
+const handleDelectToWishlist = async (propertyId: string ) => {
+  try {
+    if (!propertyId) {
+      throw new Error("Property ID is missing");
+    }
+
+    const response = await axios.post(
+      `${BaseUrl}/api/user/wishlist/delete`,
+      { propertyId },
+      {
+        headers: {
+          Authorization: `Bearer ${getCookieValue()}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log(response.data.message);
+    
+    alert(response.data.message);
+   window.location.reload();
+
+  } catch (error: any) {
+    // Axios-specific error
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        // Backend responded with error status
+        const message =
+          error.response.data?.message || "Something went wrong";
+        console.error("API Error:", message);
+        alert(message);
+      } else if (error.request) {
+        // Request made but no response
+        console.error("No response from server");
+        alert("Server not responding. Please try again later.");
+      } else {
+        // Axios setup error
+        console.error("Axios Error:", error.message);
+        alert("Request failed. Please try again.");
+      }
+    } else {
+      // Non-Axios error
+      console.error("Unexpected Error:", error);
+      alert("Unexpected error occurred.");
+    }
+  }
+};
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }} 
@@ -49,7 +163,7 @@ function PropertyCards2({ property, type }: BookingCardsProps) {
       <div className="flex gap-3 mb-3">
         <div className="relative">
           <img
-            src={property.photos[0] ||  ""}
+            src={property?.photos[0] ||  ""}
             alt={property.property_name}
             className="w-24 h-24 rounded-lg object-cover"
           />
@@ -72,7 +186,69 @@ function PropertyCards2({ property, type }: BookingCardsProps) {
                 <span className="truncate capitalize flex  items-center justify-center ">{property.city} <ChevronRight size={12} className='mt-0.5'/> {property.location}</span>
               </p>
             </div>
-            <HeartIcon size={18} className="text-gray-400 hover:text-red-500 cursor-pointer transition-colors flex-shrink-0 ml-2" />
+
+{
+  mode == "wishlist"
+  ? 
+  <Dialog>
+  <DialogTrigger asChild>
+    <Trash2
+      size={18}
+      className="text-gray-400 hover:text-red-500 cursor-pointer transition-colors flex-shrink-0 ml-2"
+    />
+  </DialogTrigger>
+
+  <DialogContent className={`${inter.className} sm:max-w-[400px]`}>
+    <DialogHeader>
+      <DialogTitle>Add to Wishlist</DialogTitle>
+      <DialogDescription>
+        Do you want to add this property to your wishlist?
+      </DialogDescription>
+    </DialogHeader>
+
+    <DialogFooter className="flex gap-2">
+      
+      <button
+        onClick={() => handleDelectToWishlist(property.id)}
+        className="px-4 py-2 rounded-md text-sm bg-red-500 text-white hover:bg-red-600"
+      >
+        Yes, Add
+      </button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+  :
+<Dialog>
+  <DialogTrigger asChild>
+    <HeartIcon
+      size={18}
+      className="text-gray-400 hover:text-red-500 cursor-pointer transition-colors flex-shrink-0 ml-2"
+    />
+  </DialogTrigger>
+
+  <DialogContent className={`${inter.className} sm:max-w-[400px]`}>
+    <DialogHeader>
+      <DialogTitle>Add to Wishlist</DialogTitle>
+      <DialogDescription>
+        Do you want to add this property to your wishlist?
+      </DialogDescription>
+    </DialogHeader>
+
+    <DialogFooter className="flex gap-2">
+
+
+      <button
+        onClick={() => handleAddToWishlist(property.id)}
+        className="px-4 py-2 rounded-md text-sm bg-red-500 text-white hover:bg-red-600"
+      >
+        Yes, Add
+      </button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+}
+          
+
           </div>
 
           <div className="flex items-center gap-2 mt-2">

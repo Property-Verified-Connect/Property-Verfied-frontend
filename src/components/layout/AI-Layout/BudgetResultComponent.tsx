@@ -9,7 +9,19 @@ const property={
   
 }
 
-const BudgetResultComponent = ({ answers ,  predictions }: { answers: string[] }) => (
+
+const formatToLakhRange = (rangeStr) => {
+  if (!rangeStr) return "";
+
+  const [min, max] = rangeStr.split("-").map(Number);
+
+  const minLakh = min / 100000;
+  const maxLakh = max / 100000;
+
+  return `${minLakh} - ${maxLakh} lakh`;
+};
+
+const BudgetResultComponent = ({ answers ,  predictions ,BudgetProperties }: { answers: string[] }) => (
   <div className="bg-white rounded-2xl p-4 shadow-lg max-w-md">
     <div
     
@@ -65,7 +77,8 @@ const BudgetResultComponent = ({ answers ,  predictions }: { answers: string[] }
           initial={{opacity:0}}
       animate={{opacity:1}}
     transition={{delay:1.2}}
-       className="text-2xl font-bold text-green-600">{predictions?.safe_purchase_limit}</motion.p>
+    
+       className="text-2xl font-bold text-green-600">{formatToLakhRange(predictions?.safe_purchase_limit)}</motion.p>
       <p className="text-xs text-gray-600 mt-1">EMI Capacity: {predictions?.emi_capacity} /month</p>
       <p className="text-xs text-green-700 mt-2">✅ Risk Level: {predictions?.risk}</p>
     </motion.div>
@@ -102,10 +115,22 @@ const BudgetResultComponent = ({ answers ,  predictions }: { answers: string[] }
 
        </div>
       </div> */}
-
-       <RecommandationCard/>
-        <RecommandationCard/>
-
+  
+     {  BudgetProperties.length !== 0 ?
+        BudgetProperties.map((val ,index)=>(
+          
+          <RecommandationCard key={index} property={val} />
+        ))
+        :
+        <div> No Recommanded  Property found  </div>
+     }
+       
+   <div className="flex w-full items-start justify-between flex-col ">
+      
+          <button className="bg-[#2396C6]  hover:bg-sky-600 text-white px-2 py-2 mt-2 w-full rounded-lg font-semibold text-sm transition-colors duration-200 shadow-md hover:shadow-lg">
+           See more Property
+          </button>
+        </div>
     </div>
   </div>
 );

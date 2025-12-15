@@ -127,7 +127,10 @@ export default function PropertyDashboard() {
            <Link href={"/dashboard/user/refer-pro"}> 
            <FeatureCard icon={"refer"} label="Refer Pro" />
           </Link>
+             <Link href={"/dashboard/user/wishlist"}> 
+        
           <FeatureCard icon={"law"} label="Wishlist" />
+          </Link>
           <FeatureCard icon={"safe"} label="Verify your Property" />
          
         </div>

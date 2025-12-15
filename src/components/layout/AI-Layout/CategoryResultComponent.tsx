@@ -3,8 +3,11 @@ import inter from '@/lib/font/Inter';
 import { Star, Users } from 'lucide-react';
 import React from 'react'
 
-const CategoryResultComponent = ({ answers , predictions }: { answers: string[] }) => (
+const CategoryResultComponent = ({ answers , predictions , CategoryProperties }: { answers: string[] }) => (
+  
+
   <div className={`${inter.className} bg-white rounded-2xl p-4 shadow-lg max-w-md`}>
+    
     <div className="flex items-center gap-2 mb-4">
       <div className="bg-purple-100 p-2 rounded-full">
         <Users className="text-purple-600" size={24} />
@@ -40,7 +43,7 @@ const CategoryResultComponent = ({ answers , predictions }: { answers: string[] 
         <span className="font-bold text-purple-700">Best Match</span>
         <div className="flex items-center gap-1">
           <Star className="text-yellow-500 fill-yellow-500" size={16} />
-          <span className="font-bold text-purple-600">92%</span>
+          <span className="font-bold text-purple-600">{predictions?.matching_score}%</span>
         </div>
       </div>
       <p className="font-semibold text-gray-800">{predictions?.best_match}</p>
@@ -103,7 +106,15 @@ const CategoryResultComponent = ({ answers , predictions }: { answers: string[] 
       <div className="p-4 bg-gradient-to-r mt-2 from-purple-50 to-blue-50 rounded-lg border-2 border-purple-200">
       <div className="flex  flex-col justify-between mb-2">
         <span className="font-bold text-purple-700 mb-1  ">Recommanded Property</span>
-            <RecommandationCard/>
+          {
+            CategoryProperties?.length !== 0 ? 
+            CategoryProperties.map((val ,index)=>(
+              <RecommandationCard key={val?.id || index} property={val}/>
+
+            ))
+            : 
+            <div>Recommanded property Not Found</div>
+          }
       </div>
     </div>
 

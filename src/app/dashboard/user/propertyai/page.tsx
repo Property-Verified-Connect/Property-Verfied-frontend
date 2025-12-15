@@ -101,14 +101,14 @@ export default function AIAssistantChat() {
     setShowOptions(true);
   };
 
-  const getResultComponent = (mode: string, answers: string[] ,predictions) => {
+  const getResultComponent = (mode: string, answers: string[] ,predictions ,BudgetProperties , CategoryProperties) => {
     switch (mode) {
       case "properties":
         return <PropertyResultComponent answers={answers}  />;
       case "budget":
-        return <BudgetResultComponent answers={answers}  predictions={predictions} />;
+        return <BudgetResultComponent answers={answers}  predictions={predictions} BudgetProperties={BudgetProperties} />;
       case "category":
-        return <CategoryResultComponent answers={answers}  predictions={predictions} />;
+        return <CategoryResultComponent answers={answers}  predictions={predictions} CategoryProperties ={CategoryProperties} />;
       case "rent":
         return <RentResultComponent answers={answers}  predictions={predictions} />;
       case "discuss":
@@ -140,15 +140,17 @@ export default function AIAssistantChat() {
         }
     ) 
 
-    
-     const predictions = response.data.cleanResponse || {};
+    console.log(response.data)
+     const predictions = response.data.cleanResponse || {}; 
+    const  BudgetProperties =response.data.BudgetProperties || {} 
+    const  CategoryProperties = response.data.CategoryProperties || {} 
      
 
     //  if (!predictions) {
     //   throw new Error("No predictions received from API");
     // }   
        console.log(predictions)
-      const resultComponent = getResultComponent(mode, answers , predictions );
+      const resultComponent = getResultComponent(mode, answers , predictions ,BudgetProperties,CategoryProperties );
       setMessages((prev) => [...prev, { sender: "component", component: resultComponent }]);
         if (mode === "discuss") {
       
