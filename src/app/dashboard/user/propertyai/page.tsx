@@ -1,8 +1,22 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Bot, Send, User, Home, MessageSquare, PieChart, Building2, MapPin, IndianRupee, TrendingUp, Users, Star } from "lucide-react";
+import {
+  ArrowLeft,
+  Bot,
+  Send,
+  User,
+  Home,
+  MessageSquare,
+  PieChart,
+  Building2,
+  MapPin,
+  IndianRupee,
+  TrendingUp,
+  Users,
+  Star,
+} from "lucide-react";
 import inter from "@/lib/font/Inter";
-import {motion} from "framer-motion"
+import { motion } from "framer-motion";
 import Link from "next/link";
 import conversationFlows from "@/function/conversationFlow";
 import PropertyResultComponent from "@/components/layout/AI-Layout/PropertyResultComponent";
@@ -11,9 +25,9 @@ import CategoryResultComponent from "@/components/layout/AI-Layout/CategoryResul
 import RentResultComponent from "@/components/layout/AI-Layout/RentResultComponent";
 import axios from "axios";
 import { getCookieValue } from "@/function/cookies";
+import { useRouter } from "next/navigation";
 
-
-const BaseURL = process.env.NEXT_PUBLIC_API_URL 
+const BaseURL = process.env.NEXT_PUBLIC_API_URL;
 
 type Sender = "bot" | "user" | "component";
 
@@ -23,8 +37,7 @@ type Message = {
   component?: React.ReactNode;
 };
 
-type AssistantMode = | "budget" | "category" | "rent" | "discuss" | null;
-
+type AssistantMode = "budget" | "category" | "rent" | "discuss" | null;
 
 const assistantOptions = [
   // { id: "properties", label: "View Properties with AI ", icon: Home },
@@ -36,7 +49,12 @@ const assistantOptions = [
 
 // Result Components
 
-const DiscussResultComponent = ({ answers, predictions }: { answers: string[] }) => (
+const DiscussResultComponent = ({
+  answers,
+  predictions,
+}: {
+  answers: string[];
+}) => (
   <div className="bg-white rounded-2xl p-4 shadow-lg max-w-md">
     <div className="flex items-center gap-2 mb-4">
       <div className="bg-orange-100 p-2 rounded-full">
@@ -44,11 +62,14 @@ const DiscussResultComponent = ({ answers, predictions }: { answers: string[] })
       </div>
       <h3 className="font-bold text-lg">AI Discussion</h3>
     </div>
-      
-   <h1> {predictions.answer}</h1>
+
+    <h1> {predictions.answer}</h1>
 
     <div className="mt-4 p-3 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg">
-      <p className="text-xs text-gray-700">💡 Ask me anything about properties, investments, or area recommendations!</p>
+      <p className="text-xs text-gray-700">
+        💡 Ask me anything about properties, investments, or area
+        recommendations!
+      </p>
     </div>
   </div>
 );
@@ -66,23 +87,30 @@ export default function AIAssistantChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
 
+  const router = useRouter();
+
   // const scrollToBottom = () => {
   //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth",block: "start" });
   // };
 
-
   const scrollToBottom = () => {
-  // Get the last message object
-  const lastMsg = messages[messages.length - 1];
+    // Get the last message object
+    const lastMsg = messages[messages.length - 1];
 
-  if (lastMsg?.sender === "component" && lastMessageRef.current) {
-    // If it's a component, snap its TOP to the top of the view
-    lastMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-  } else {
-    // For normal text/chat, snap to the very bottom
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }
-};
+    if (lastMsg?.sender === "component" && lastMessageRef.current) {
+      // If it's a component, snap its TOP to the top of the view
+      lastMessageRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    } else {
+      // For normal text/chat, snap to the very bottom
+      messagesEndRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  };
   useEffect(() => {
     scrollToBottom();
   }, [messages, showOptions]);
@@ -91,28 +119,50 @@ export default function AIAssistantChat() {
     setCurrentMode(mode);
     setQuestionIndex(0);
     setUserAnswers([]);
-    
+
     const flow = conversationFlows[mode as keyof typeof conversationFlows];
     const firstQuestion = flow[0];
-    
+
     setMessages([{ sender: "bot", text: firstQuestion.question }]);
     setCurrentOptions(firstQuestion.options);
     setAllowTextInput(firstQuestion.allowText);
     setShowOptions(true);
   };
 
-  const getResultComponent = (mode: string, answers: string[] ,predictions ,BudgetProperties , CategoryProperties) => {
+  const getResultComponent = (
+    mode: string,
+    answers: string[],
+    predictions,
+    BudgetProperties,
+    CategoryProperties
+  ) => {
     switch (mode) {
       case "properties":
-        return <PropertyResultComponent answers={answers}  />;
+        return <PropertyResultComponent answers={answers} />;
       case "budget":
-        return <BudgetResultComponent answers={answers}  predictions={predictions} BudgetProperties={BudgetProperties} />;
+        return (
+          <BudgetResultComponent
+            answers={answers}
+            predictions={predictions}
+            BudgetProperties={BudgetProperties}
+          />
+        );
       case "category":
-        return <CategoryResultComponent answers={answers}  predictions={predictions} CategoryProperties ={CategoryProperties} />;
+        return (
+          <CategoryResultComponent
+            answers={answers}
+            predictions={predictions}
+            CategoryProperties={CategoryProperties}
+          />
+        );
       case "rent":
-        return <RentResultComponent answers={answers}  predictions={predictions} />;
+        return (
+          <RentResultComponent answers={answers} predictions={predictions} />
+        );
       case "discuss":
-        return <DiscussResultComponent answers={answers} predictions={predictions} />;
+        return (
+          <DiscussResultComponent answers={answers} predictions={predictions} />
+        );
       default:
         return null;
     }
@@ -120,56 +170,63 @@ export default function AIAssistantChat() {
 
   const callAPI = async (mode: string, answers: string[]) => {
     setIsProcessing(true);
-    
-     console.log(answers)
-      console.log(mode)
+
+    console.log(answers);
+    console.log(mode);
     try {
       // Simulated API call - replace with your actual endpoint
-       
-   const questions = conversationFlows[mode].map(item => item.question);
-   
 
-      const response = await axios.post( `${BaseURL}/api/ai/genrate`,
-        {mode , answers , questions },
+      const questions = conversationFlows[mode].map((item) => item.question);
+
+      const response = await axios.post(
+        `${BaseURL}/api/ai/genrate`,
+        { mode, answers, questions },
         {
           headers: {
-                    "Authorization": `Bearer ${getCookieValue()}`, 
-                    "Content-Type": "application/json",
-                  }
-
+            Authorization: `Bearer ${getCookieValue()}`,
+            "Content-Type": "application/json",
+          },
         }
-    ) 
+      );
 
-    console.log(response.data)
-     const predictions = response.data.cleanResponse || {}; 
-    const  BudgetProperties =response.data.BudgetProperties || {} 
-    const  CategoryProperties = response.data.CategoryProperties || {} 
-     
+      console.log(response.data);
+      const predictions = response.data.cleanResponse || {};
+      const BudgetProperties = response.data.BudgetProperties || {};
+      const CategoryProperties = response.data.CategoryProperties || {};
 
-    //  if (!predictions) {
-    //   throw new Error("No predictions received from API");
-    // }   
-       console.log(predictions)
-      const resultComponent = getResultComponent(mode, answers , predictions ,BudgetProperties,CategoryProperties );
-      setMessages((prev) => [...prev, { sender: "component", component: resultComponent }]);
-        if (mode === "discuss") {
-      
+      //  if (!predictions) {
+      //   throw new Error("No predictions received from API");
+      // }
+      console.log(predictions);
+      const resultComponent = getResultComponent(
+        mode,
+        answers,
+        predictions,
+        BudgetProperties,
+        CategoryProperties
+      );
+      setMessages((prev) => [
+        ...prev,
+        { sender: "component", component: resultComponent },
+      ]);
+      if (mode === "discuss") {
         setAllowTextInput(true);
         setShowOptions(true);
       }
-      
     } catch (error) {
       console.error("API Error:", error);
-      
+      alert("Gemini Too many request try again later");
+
+      router.push("/dashboard/user");
+
       // Fallback: still show component on error
-      const resultComponent = getResultComponent(mode, answers);
-      setMessages((prev) => [...prev, { sender: "component", component: resultComponent }]);
-       if (mode === "discuss") {
-      
-        setAllowTextInput(true);
-        setShowOptions(true);
-      }
-      
+      // const resultComponent = getResultComponent(mode, answers);
+      // setMessages((prev) => [...prev, { sender: "component", component: resultComponent }]);
+      //  if (mode === "discuss") {
+
+      //   setAllowTextInput(true);
+      //   setShowOptions(true);
+      // }
     } finally {
       setIsProcessing(false);
       // setShowOptions(false);
@@ -190,11 +247,12 @@ export default function AIAssistantChat() {
     if (!currentMode) return;
 
     setMessages((prev) => [...prev, { sender: "user", text: answer }]);
-    
+
     const newAnswers = [...userAnswers, answer];
     setUserAnswers(newAnswers);
-    
-    const currentFlow = conversationFlows[currentMode as keyof typeof conversationFlows];
+
+    const currentFlow =
+      conversationFlows[currentMode as keyof typeof conversationFlows];
     const nextIndex = questionIndex + 1;
 
     setShowOptions(false);
@@ -202,7 +260,10 @@ export default function AIAssistantChat() {
     if (nextIndex < currentFlow.length) {
       setTimeout(() => {
         const nextQuestion = currentFlow[nextIndex];
-        setMessages((prev) => [...prev, { sender: "bot", text: nextQuestion.question }]);
+        setMessages((prev) => [
+          ...prev,
+          { sender: "bot", text: nextQuestion.question },
+        ]);
         setCurrentOptions(nextQuestion.options);
         setAllowTextInput(nextQuestion.allowText);
         setShowOptions(true);
@@ -210,7 +271,10 @@ export default function AIAssistantChat() {
       }, 500);
     } else {
       setTimeout(() => {
-        setMessages((prev) => [...prev, { sender: "bot", text: "Perfect! Let me analyze your responses..." }]);
+        setMessages((prev) => [
+          ...prev,
+          { sender: "bot", text: "Perfect! Let me analyze your responses..." },
+        ]);
         callAPI(currentMode, newAnswers);
       }, 500);
     }
@@ -226,76 +290,80 @@ export default function AIAssistantChat() {
   };
 
   return (
-    <div className={`${inter.className} h-screen w-full flex items-center justify-center bg-gray-100`}>
+    <div
+      className={`${inter.className} h-screen w-full flex items-center justify-center bg-gray-100`}
+    >
       <div className="flex flex-col bg-prv text-zinc-700 w-full md:w-[80%] mx-auto h-full sm:h-[600px] md:rounded-3xl overflow-hidden shadow-lg border border-[#123a57]">
         {/* Header */}
         <div className="flex items-center gap-2 bg-white px-4 w-full py-1">
           <div className="p-2">
-          {
-              showOptions ?
-            <button 
-              onClick={handleReset}
-              className="p-2 bg-prv border rounded-full hover:bg-[#b5d4f0] transition-colors"
-            >
-              <ArrowLeft color="black" size={20} />
-            </button>
-              
-              :
-            <Link href="/dashboard/user">
-            
-             <button 
-              className="p-2 bg-prv border rounded-full hover:bg-[#b5d4f0] transition-colors"
-            >
-              <ArrowLeft color="black" size={20} />
-            </button>
-            </Link>
-            }
+            {showOptions ? (
+              <button
+                onClick={handleReset}
+                className="p-2 bg-prv border rounded-full hover:bg-[#b5d4f0] transition-colors"
+              >
+                <ArrowLeft color="black" size={20} />
+              </button>
+            ) : (
+              <Link href="/dashboard/user">
+                <button className="p-2 bg-prv border rounded-full hover:bg-[#b5d4f0] transition-colors">
+                  <ArrowLeft color="black" size={20} />
+                </button>
+              </Link>
+            )}
           </div>
           <div className="h-20 w-30">
             <img src="/image/assitant.png" alt="AI Assistant" />
           </div>
-          <div className="flex-1">
-           
-          </div>
+          <div className="flex-1"></div>
         </div>
 
         {/* Chat messages */}
-              <p className="font-semibold text-xl text-center mt-3 mb-3">
-              {currentMode ? assistantOptions.find(opt => opt.id === currentMode)?.label : ""}
-            </p>
+        <p className="font-semibold text-xl text-center mt-3 mb-3">
+          {currentMode
+            ? assistantOptions.find((opt) => opt.id === currentMode)?.label
+            : ""}
+        </p>
         <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
           {messages.map((msg: Message, i: number) => (
-            <div key={i} 
-            ref={i === messages.length - 1 ? lastMessageRef : null}
-            className={`flex ${msg.sender === "user" ? "justify-end" : msg.sender === "component" ? "justify-start" : "justify-start"}`}>
+            <div
+              key={i}
+              ref={i === messages.length - 1 ? lastMessageRef : null}
+              className={`flex ${
+                msg.sender === "user"
+                  ? "justify-end"
+                  : msg.sender === "component"
+                  ? "justify-start"
+                  : "justify-start"
+              }`}
+            >
               {msg.sender === "bot" && (
-                
                 <div className="p-2 h-10 bg-white rounded-2xl flex-shrink-0">
                   <Bot color="black" size={20} />
                 </div>
               )}
-              
+
               {msg.sender === "component" ? (
                 <div className="w-full flex justify-start">
                   <div className="p-2 h-10 bg-white rounded-2xl flex-shrink-0">
                     <Bot color="black" size={20} />
                   </div>
-                  <div className="ml-2">
-                    {msg.component}
-                  </div>
+                  <div className="ml-2">{msg.component}</div>
                 </div>
               ) : (
                 <motion.div
-                    initial={{opacity:0}}
-                     animate={{opacity:1}}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   className={`px-4 py-2 rounded-2xl text-sm max-w-[75%] whitespace-pre-line ${
-                    msg.sender === "bot" ? "bg-[#2588e3] text-white ml-2" : "bg-white text-black mr-2"
+                    msg.sender === "bot"
+                      ? "bg-[#2588e3] text-white ml-2"
+                      : "bg-white text-black mr-2"
                   }`}
                 >
                   {msg.text}
                 </motion.div>
               )}
-              
+
               {msg.sender === "user" && (
                 <div className="p-2 bg-white rounded-2xl flex-shrink-0">
                   <User color="black" size={20} />
@@ -303,31 +371,34 @@ export default function AIAssistantChat() {
               )}
             </div>
           ))}
-          
+
           {/* Options Display */}
           {showOptions && currentOptions.length > 0 && (
             <>
-         
-            <div className="flex justify-start animate-fadeIn">
-              <div className="p-2 h-10 bg-white rounded-2xl flex-shrink-0">
-                <Bot color="black" size={20} />
+              <div className="flex justify-start animate-fadeIn">
+                <div className="p-2 h-10 bg-white rounded-2xl flex-shrink-0">
+                  <Bot color="black" size={20} />
+                </div>
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 10 }}
+                  className="ml-2 flex flex-wrap gap-2 max-w-[75%]"
+                >
+                  {currentOptions.map((option, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleOptionSelect(option)}
+                      className="px-4 py-2 bg-white text-[#007acc] border-2 border-[#007acc] rounded-full text-sm font-medium hover:bg-[#007acc] hover:text-white transition-all shadow-sm hover:shadow-md animate-slideUp"
+                      style={{ animationDelay: `${idx * 0.05}s` }}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </motion.div>
               </div>
-              <motion.div initial={{opacity:0, y:-10}} animate={{opacity:1,y:10}} className="ml-2 flex flex-wrap gap-2 max-w-[75%]">
-                {currentOptions.map((option, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleOptionSelect(option)}
-                    className="px-4 py-2 bg-white text-[#007acc] border-2 border-[#007acc] rounded-full text-sm font-medium hover:bg-[#007acc] hover:text-white transition-all shadow-sm hover:shadow-md animate-slideUp"
-                    style={{ animationDelay: `${idx * 0.05}s` }}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </motion.div>
-            </div>
             </>
           )}
-          
+
           {isProcessing && (
             <div className="flex justify-start">
               <div className="p-2 bg-white rounded-2xl">
@@ -336,8 +407,18 @@ export default function AIAssistantChat() {
               <div className="px-4 py-2 rounded-2xl text-sm bg-[#003b63] text-white ml-2">
                 <div className="flex gap-1">
                   <span className="animate-bounce">●</span>
-                  <span className="animate-bounce" style={{ animationDelay: "0.1s" }}>●</span>
-                  <span className="animate-bounce" style={{ animationDelay: "0.2s" }}>●</span>
+                  <span
+                    className="animate-bounce"
+                    style={{ animationDelay: "0.1s" }}
+                  >
+                    ●
+                  </span>
+                  <span
+                    className="animate-bounce"
+                    style={{ animationDelay: "0.2s" }}
+                  >
+                    ●
+                  </span>
                 </div>
               </div>
             </div>
@@ -347,17 +428,21 @@ export default function AIAssistantChat() {
 
         {/* Assistant Options Grid */}
         {messages.length === 0 && (
-          <div  className="w-full h-full flex flex-col items-center justify-center p-4">
-            <h1 className="font-bold text-3xl md:text-4xl mb-8 text-center">What can I help with?</h1>
+          <div className="w-full h-full flex flex-col items-center justify-center p-4">
+            <h1 className="font-bold text-3xl md:text-4xl mb-8 text-center">
+              What can I help with?
+            </h1>
             <div className="md:w-[26rem] w-full gap-2 flex flex-wrap items-center justify-center">
               {assistantOptions.map((option) => {
                 const Icon = option.icon;
                 return (
                   <motion.button
-                    initial={{opacity:0}}
-                     animate={{opacity:1}}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     key={option.id}
-                    onClick={() => handleModeSelection(option.id as AssistantMode)}
+                    onClick={() =>
+                      handleModeSelection(option.id as AssistantMode)
+                    }
                     className="p-3 rounded-full font-semibold  gap-1 flex items-center text-[11px] shadow-2xl bg-white  md:bg-none md:text-sm justify-center w-fit border-2 md:border-dashed border-gray-400 md:border-zinc-700 hover:bg-white hover:border-solid hover:shadow-md transition-all cursor-pointer"
                   >
                     <Icon size={20} /> {option.label}
@@ -373,8 +458,8 @@ export default function AIAssistantChat() {
           <input
             type="text"
             placeholder={
-              !currentMode 
-                ? "Select an option above to start" 
+              !currentMode
+                ? "Select an option above to start"
                 : allowTextInput && showOptions
                 ? "Type your answer or select an option..."
                 : showOptions
@@ -383,13 +468,25 @@ export default function AIAssistantChat() {
             }
             className="flex-1 bg-transparent text-zinc-700 border rounded-full px-4 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#1e90ff]"
             value={input}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && handleTextSubmit()}
-            disabled={!currentMode || !allowTextInput || !showOptions || isProcessing}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setInput(e.target.value)
+            }
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
+              e.key === "Enter" && handleTextSubmit()
+            }
+            disabled={
+              !currentMode || !allowTextInput || !showOptions || isProcessing
+            }
           />
-          <button 
-            onClick={handleTextSubmit} 
-            disabled={!currentMode || !allowTextInput || !showOptions || isProcessing || input.trim() === ""}
+          <button
+            onClick={handleTextSubmit}
+            disabled={
+              !currentMode ||
+              !allowTextInput ||
+              !showOptions ||
+              isProcessing ||
+              input.trim() === ""
+            }
             className="bg-[#007acc] hover:bg-[#0090ff] transition-all p-2 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send className="w-4 h-4 text-white" />
