@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import { Search, ChevronRight, ArrowLeft, Filter, Building, Grid, House, TreePalm } from "lucide-react";
+import { Search, ChevronRight, ArrowLeft, Filter, Building, Grid, House, TreePalm, ChevronRightIcon } from "lucide-react";
 import Nav from "@/components/layout/nav";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,19 @@ import axios from "axios";
 import PropertyCards from "@/components/shared/property-cards";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCookieValue } from "@/function/cookies";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -52,7 +65,9 @@ const Page = () => {
           }
         });
         const fetchedProperties = response.data.properties ?? response.data ?? [];
+        console.log(fetchedProperties)
         setProperties(fetchedProperties);
+      
         
         setFilteredProperties(fetchedProperties);
       } catch (err) {
@@ -135,13 +150,31 @@ const Page = () => {
         <div className="flex w-11/12 max-w-md justify-between gap-3 items-center mb-4">
          
          <div  className="flex gap-1 ">
-            <Button
+
+         <Sheet>
+      <SheetTrigger asChild>
+    <Button
             variant="outline"
             className="text-sm bg-white shadow px-3 py-1 rounded-full"
-            onClick={handleReset}
           >
           <Filter/>
           </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className={`z-99 ${inter.className} `}>
+        <SheetHeader>
+          <SheetTitle className="text-2xl font-bold text-zinc-600 py-4 flex items-center px-3 " >Property Fliter <ChevronRightIcon/> </SheetTitle>
+
+        </SheetHeader>
+       
+        <SheetFooter>
+          <Button type="submit" variant={"selectdashed"}>Save changes</Button>
+          <SheetClose asChild>
+            <Button variant="outline">Close</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+          
           <Button
             variant="outline"
             className="text-sm bg-white font-semibold shadow px-3 py-1 rounded-full"

@@ -82,6 +82,7 @@ export default function AIAssistantChat() {
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
+  const [displayback, setdisplayback] = useState(false);
   const [currentOptions, setCurrentOptions] = useState<string[]>([]);
   const [allowTextInput, setAllowTextInput] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -257,6 +258,8 @@ export default function AIAssistantChat() {
 
     setShowOptions(false);
 
+    setdisplayback(true);
+
     if (nextIndex < currentFlow.length) {
       setTimeout(() => {
         const nextQuestion = currentFlow[nextIndex];
@@ -287,6 +290,7 @@ export default function AIAssistantChat() {
     setUserAnswers([]);
     setInput("");
     setShowOptions(false);
+    setdisplayback(false)
   };
 
   return (
@@ -297,7 +301,7 @@ export default function AIAssistantChat() {
         {/* Header */}
         <div className="flex items-center gap-2 bg-white px-4 w-full py-1">
           <div className="p-2">
-            {showOptions ? (
+            {displayback ? (
               <button
                 onClick={handleReset}
                 className="p-2 bg-prv border rounded-full hover:bg-[#b5d4f0] transition-colors"

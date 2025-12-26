@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import {
   Heart,
   ArrowLeft,
-
   Phone,
   Bot,
   Download,
@@ -13,6 +12,9 @@ import {
   Shield,
   MapPin,
   Link2,
+  Loader2,
+  ChevronsRight,
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -68,21 +70,6 @@ interface PropertyDetails {
   updated_at?: string;
 }
 
-interface StaticProperty {
-  title: string;
-  image: string;
-  name: string;
-  location: string;
-  size: string;
-  type: string;
-  price: string;
-  RERA: string;
-  description: string;
-  contact: {
-    whatsapp: string;
-  };
-}
-
 interface ApiResponse {
   properties: PropertyDetails;
   message?: string;
@@ -117,14 +104,19 @@ const PropertyDetails: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [timeSlot, setTimeSlot] = useState<string>("");
   const [propertyDetails, setPropertyDetails] = useState<PropertyDetails | null>(null);
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isBooking, setIsBooking] = useState<boolean>(false);
+  const [showBookingDialog, setShowBookingDialog] = useState<boolean>(false);
+  const [timeSlotError, setTimeSlotError] = useState<string>("");
+  const [formErrors, setFormErrors] = useState({
+    visitType: "",
+    date: "",
+    timeSlot: ""
+  });
 
   const params = useParams<{ id: string }>();
   const id = params.id;
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
-
- 
 
   useEffect(() => {
     const fetchProperties = async (): Promise<void> => {
@@ -133,12 +125,11 @@ const PropertyDetails: React.FC = () => {
           `${BASE_URL}/api/user/getApprovedPropertybyID`,
           { id },
           {
-
             headers: {
-                "Authorization": `Bearer ${getCookieValue()}`, 
-                "Content-Type": "application/json",
+              "Authorization": `Bearer ${getCookieValue()}`, 
+              "Content-Type": "application/json",
+            }
           }
-        }
         );
 
         setPropertyDetails(response.data.properties);
@@ -146,10 +137,7 @@ const PropertyDetails: React.FC = () => {
       } catch (error) {
         const axiosError = error as AxiosError<ErrorResponse>;
         console.error("Error fetching property:", axiosError.message);
-    } 
-    // finally {
-      //   setIsLoading(false);
-      // }
+      }
     };
 
     if (id) {
@@ -157,39 +145,99 @@ const PropertyDetails: React.FC = () => {
     }
   }, [id, BASE_URL]);
 
+const isValidTimeSlot = (time: string): boolean => {
+  // Regex for single time: "11 pm", "11 PM", "11:00 AM", "10:00 PM"
+  const singleTimeRegex = /^(0?[1-9]|1[0-2])(:[0-5][0-9])?\s?(AM|PM|am|pm)$/i;
+  
+  // Regex for time range: "11 pm - 2pm", "10:00 AM - 12:00 PM", "9am-5pm"
+  const timeRangeRegex = /^(0?[1-9]|1[0-2])(:[0-5][0-9])?\s?(AM|PM|am|pm)\s?-\s?(0?[1-9]|1[0-2])(:[0-5][0-9])?\s?(AM|PM|am|pm)$/i;
+  
+  return singleTimeRegex.test(time.trim()) || timeRangeRegex.test(time.trim());
+};
+  const handleTimeSlotChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = e.target.value;
+    setTimeSlot(value);
+    
+    // Clear error when user starts typing
+    if (timeSlotError) {
+      setTimeSlotError("");
+    }
+    
+    // Validate on change if there's already some input
+    if (value && !isValidTimeSlot(value)) {
+      setTimeSlotError("Invalid format. Use '10:00 AM' or '10:00 AM - 12:00 PM'");
+    } else {
+      setTimeSlotError("");
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const errors = {
+      visitType: "",
+      date: "",
+      timeSlot: ""
+    };
+
+    let isValid = true;
+
+    if (!visitType) {
+      errors.visitType = "Please select a visit type";
+      isValid = false;
+    }
+
+    if (!selectedDate) {
+      errors.date = "Please select a date";
+      isValid = false;
+    }
+
+    if (!timeSlot) {
+      errors.timeSlot = "Please enter a time slot";
+      isValid = false;
+    } else if (!isValidTimeSlot(timeSlot)) {
+      errors.timeSlot = "Invalid time format. Use '10:00 AM' or '10:00 AM - 12:00 PM'";
+      isValid = false;
+    }
+
+    setFormErrors(errors);
+    return isValid;
+  };
+
   const handleBookingSubmit = async (): Promise<void> => {
-    // Validation
-    if (!visitType || !selectedDate || !timeSlot) {
-      alert("❌ Please fill all fields");
+    // Validate form
+    if (!validateForm()) {
       return;
     }
 
     const formData: BookingFormData = {
       propertyid: id,
       visitType,
-      date: selectedDate,
+      date: selectedDate!,
       timeSlot,
-      partnerId:propertyDetails?.user_id
+      partnerId: propertyDetails?.user_id
     };
 
     console.log("Booking Request:", formData);
+
+    setIsBooking(true);
 
     try {
       const response: AxiosResponse<BookingResponse> = await axios.post(
         `${BASE_URL}/api/user/setApprovalBooking`,
         formData,
         {
-        headers: {
-                  "Authorization": `Bearer ${getCookieValue()}`, 
-                  "Content-Type": "application/json",
-                },
-   
+          headers: {
+            "Authorization": `Bearer ${getCookieValue()}`, 
+            "Content-Type": "application/json",
+          },
         }
       );
 
+      setIsBooking(false);
+      setShowBookingDialog(false);
       alert("✅ Visit booked successfully!");
       router.push("/dashboard/user");
     } catch (error) {
+      setIsBooking(false);
       console.error("Booking error:", error);
       const axiosError = error as AxiosError<ErrorResponse>;
       const errorMessage =
@@ -202,37 +250,41 @@ const PropertyDetails: React.FC = () => {
 
   const handleVisitTypeChange = (value: string): void => {
     setVisitType(value as VisitType);
+    if (formErrors.visitType) {
+      setFormErrors({ ...formErrors, visitType: "" });
+    }
   };
 
-  const handleTimeSlotChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setTimeSlot(e.target.value);
+  const handleDateSelect = (date: Date | undefined): void => {
+    setSelectedDate(date);
+    if (formErrors.date) {
+      setFormErrors({ ...formErrors, date: "" });
+    }
   };
 
   return (
     <>
       <Nav />
-    
       
       <PropertyDetailsPage propertyDetails={propertyDetails}/>
 
-
-        {/* Action Buttons */}
-        <div className={`${inter.className} w-full flex items-center justify-center`}>
-        <div className="flex items-center justify-center fixed shadow rounded-2xl bottom-4 bg-white p-4  gap-3 w-full max-w-md">
+      {/* Action Buttons */}
+      <div className={`${inter.className} w-full flex items-center justify-center`}>
+        <div className="flex items-center justify-center fixed shadow rounded-2xl bottom-4 bg-white p-4 gap-3 w-full max-w-md">
           <Button className="flex-1 bg-[#2396C6] hover:bg-[#0062cc] text-white py-5 text-base rounded-xl font-medium shadow">
             <Download /> Brochure
           </Button>
 
           {/* Book Visit Dialog */}
-          <Dialog>
+          <Dialog open={showBookingDialog} onOpenChange={setShowBookingDialog}>
             <DialogTrigger asChild>
               <Button className="flex-1 bg-[#2396C6] hover:bg-[#0062cc] text-white py-5 text-base rounded-xl font-medium shadow">
                 <Book /> Book Visit
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md mt-5 bg-white rounded-xl">
+            <DialogContent className={`${inter.className} sm:max-w-md z-99 mt-5 bg-white rounded-xl`}>
               <DialogHeader>
-                <DialogTitle className="text-[#007BFF]">
+                <DialogTitle className="text-[#007BFF] font-bold">
                   Book a Property Visit
                 </DialogTitle>
               </DialogHeader>
@@ -246,7 +298,7 @@ const PropertyDetails: React.FC = () => {
                   <RadioGroup
                     defaultValue={visitType}
                     onValueChange={handleVisitTypeChange}
-                    className="flex gap-4"
+                    className="flex gap-4 items-center"
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="home" id="home" />
@@ -257,6 +309,12 @@ const PropertyDetails: React.FC = () => {
                       <Label htmlFor="site">Site Visit</Label>
                     </div>
                   </RadioGroup>
+                  {formErrors.visitType && (
+                    <div className="flex items-center gap-1 mt-1 text-red-500 text-xs">
+                      <AlertCircle className="h-3 w-3" />
+                      <span>{formErrors.visitType}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Date Picker */}
@@ -267,21 +325,37 @@ const PropertyDetails: React.FC = () => {
                   <Calendar
                     mode="single"
                     selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    className="rounded-md border"
+                    onSelect={handleDateSelect}
+                    className={`rounded-md border ${formErrors.date ? 'border-red-500' : ''}`}
                   />
+                  {formErrors.date && (
+                    <div className="flex items-center gap-1 mt-1 text-red-500 text-xs">
+                      <AlertCircle className="h-3 w-3" />
+                      <span>{formErrors.date}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Time Slot */}
                 <div>
-                  <Label className="font-semibold text-gray-700 mb-2 block">
-                    Select Time Slot
+                  <Label className="font-semibold text-gray-700 mb-2 flex items-center">
+                    Select Time Slot <ChevronsRight className="ml-2" />
                   </Label>
                   <Input
                     placeholder="e.g. 10:00 AM - 12:00 PM"
                     value={timeSlot}
                     onChange={handleTimeSlotChange}
+                    className={`${timeSlotError || formErrors.timeSlot ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                   />
+                  {(timeSlotError || formErrors.timeSlot) && (
+                    <div className="flex items-center gap-1 mt-1 text-red-500 text-xs">
+                      <AlertCircle className="h-3 w-3" />
+                      <span>{timeSlotError || formErrors.timeSlot}</span>
+                    </div>
+                  )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    Format: "10:00 AM" or "10:00 AM - 12:00 PM"
+                  </p>
                 </div>
               </div>
 
@@ -289,16 +363,33 @@ const PropertyDetails: React.FC = () => {
                 <Button
                   className="w-full bg-[#007BFF] hover:bg-[#0062cc] text-white"
                   onClick={handleBookingSubmit}
+                  disabled={isBooking}
                 >
-                  Confirm Booking
+                  {isBooking ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Please wait...
+                    </>
+                  ) : (
+                    "Confirm Booking"
+                  )}
                 </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
+      </div>
 
+      {/* Loading Overlay */}
+      {isBooking && (
+        <div className="fixed inset-0 bg-[#0000006a]  flex items-center justify-center z-99">
+          <div className="bg-white rounded-xl p-8 flex flex-col items-center gap-4 shadow-2xl">
+            <Loader2 className="h-12 w-12 animate-spin text-[#007BFF]" />
+            <p className="text-lg font-semibold text-gray-800">Please wait...</p>
+            <p className="text-sm text-gray-500">Booking your visit</p>
+          </div>
         </div>
-     
+      )}
     </>
   );
 };

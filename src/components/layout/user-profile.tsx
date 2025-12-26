@@ -1,8 +1,7 @@
 "use client";
 
-import inter from '@/lib/font/Inter'
-import React, { useEffect, useState } from 'react'
-import { Button } from '../ui/button'
+import React, { useEffect, useState } from 'react';
+import { ChevronRight, User, Package, MapPin, CreditCard, Settings, HelpCircle, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 
@@ -12,8 +11,6 @@ interface User {
     email?: string;
     city?: string;
     role?: string;
- 
-   
 }
 
 const UserProfile: React.FC = () => {
@@ -28,7 +25,7 @@ const UserProfile: React.FC = () => {
                 credentials: "include",
             });
 
-           Cookies.remove("client_token_user", { path: "/" });
+            Cookies.remove("client_token_user", { path: "/" });
             localStorage.clear();
             router.push("/auth/login");
         } catch (error) {
@@ -44,29 +41,59 @@ const UserProfile: React.FC = () => {
         }
     }, []);
 
+    const menuItems = [
+        { icon: User, label: 'Personal Information', onClick: () => console.log('Personal Info') },
+        // { icon: Package, label: 'My Orders', onClick: () => console.log('My Orders') },
+        { icon: MapPin, label: 'Addresses', onClick: () => console.log('Addresses') },
+        // { icon: CreditCard, label: 'Payment Methods', onClick: () => console.log('Payment Methods') },
+         // { icon: Settings, label: 'Settings', onClick: () => console.log('Settings') },
+        { icon: HelpCircle, label: 'Help & Support', onClick: () => console.log('Help & Support') },
+        { icon: LogOut, label: 'Logout', onClick: logout, isLogout: true },
+    ];
+
     return (
-        <div
-            className={`${inter.className} text-2xl text-gray-500 flex items-center bg-prv justify-start flex-col font-bold  h-screen w-full pt-10 `}
-        >
-            <div className='h-32 w-full flex flex-col items-center justify-center '>
-                <div className='h-24 w-24 rounded-full bg-white border-2 p-2 overflow-hidden'>
-                    <img className='h-full w-full object-cover rounded-full' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRU0a0iDtUPUzs0GFM6DSuovK0uOE4-Sc40Pg&s" alt="" />
+        <div className="min-h-screen bg-pvr pb-40">
+            {/* Header with Profile */}
+            <div className="bg-white pt-12 pb-6 px-6 rounded-b-3xl shadow-sm">
+                <div className="flex flex-col items-center">
+                    <div className="w-24 h-24 rounded-full overflow-hidden mb-3 border-4 border-gray-100">
+                        <img 
+                            className="w-full h-full object-cover" 
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRU0a0iDtUPUzs0GFM6DSuovK0uOE4-Sc40Pg&s" 
+                            alt="Profile"
+                        />
+                    </div>
+                    <h1 className="text-xl font-semibold text-gray-900">{user?.name || 'Sophia Williams'}</h1>
+                    <p className="text-sm text-gray-500 mt-1">{user?.email || 'sophia@gmail.com'}</p>
                 </div>
-                <h1 className='text-xl'>{user?.name}</h1>
             </div>
 
-            <div className='h-40 w-[90%] flex flex-col items-center justify-center bg-white border-2  rounded-2xl shadow-2xl '>
-                <h2 className='text-sm'> Phone :  {user?.contact}</h2>
-                <h2 className='text-sm'> Email :  {user?.email}</h2>
-                <h2 className='text-sm'> City : {user?.city} </h2>
-                <h2 className='text-sm capitalize'> Role : {user?.role} </h2>
+            {/* Menu Items */}
+            <div className="mt-6 px-4">
+                <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+                    {menuItems.map((item, index) => (
+                        <button
+                            key={index}
+                            onClick={item.onClick}
+                            className={`w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors ${
+                                index !== menuItems.length - 1 ? 'border-b border-gray-100' : ''
+                            }`}
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className={`${item.isLogout ? 'text-red-500' : 'text-gray-700'}`}>
+                                    <item.icon size={22} strokeWidth={1.5} />
+                                </div>
+                                <span className={`text-base ${item.isLogout ? 'text-red-500' : 'text-gray-900'}`}>
+                                    {item.label}
+                                </span>
+                            </div>
+                            <ChevronRight size={20} className="text-gray-400" strokeWidth={2} />
+                        </button>
+                    ))}
+                </div>
             </div>
-
-            <Button onClick={logout} className=' w-[40%] mt-10 bg-red-500 '>
-                Log Out
-            </Button>
         </div>
-    )
-}
+    );
+};
 
-export default UserProfile
+export default UserProfile;

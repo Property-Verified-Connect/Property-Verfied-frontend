@@ -121,7 +121,7 @@ export default function PropertyDashboard() {
           <Link href={"/dashboard/user/propertyai"} >
           <FeatureCard icon={"spark"} label="AI Match Property" />
           </Link>
-          <Link href={"/dashboard/user/find-property/filter-property"}> 
+          <Link href={"/dashboard/user/find-property/property-list"}> 
           <FeatureCard icon={"Find"} label="Find Property" />
           </Link>
            <Link href={"/dashboard/user/refer-pro"}> 
