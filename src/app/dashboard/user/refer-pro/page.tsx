@@ -17,7 +17,7 @@ function page() {
               </Link>
 
       <div className="flex items-center w-11/12 max-w-md mb-3">
-         <h1 className={`text-2xl  font-bold text-gray-600 flex items-center`}>Refer Pro<ChevronRightIcon/></h1>
+         <h1 className={`${inter.className} text-2xl  font-bold text-gray-600 flex items-center`}>Refer Pro<ChevronRightIcon/></h1>
     
       </div>
 

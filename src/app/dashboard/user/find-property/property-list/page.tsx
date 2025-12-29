@@ -1,9 +1,10 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import { Search, ChevronRight, ArrowLeft, Filter, Building, Grid, House, TreePalm, ChevronRightIcon } from "lucide-react";
+import { Search, ChevronRight, ArrowLeft, Filter, Building, Grid, House, TreePalm, ChevronRightIcon, MapPin, Bed, Bath, Home, DollarSign, CheckCircle, Key, X } from "lucide-react";
 import Nav from "@/components/layout/nav";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -28,7 +29,7 @@ import {
 } from "@/components/ui/sheet"
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-
+import {motion} from "framer-motion"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,7 +44,18 @@ interface Property {
   config: string;
   price: string;
   img: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  balconies?: number;
+  availability_status?: string;
+  ownership?: string;
   // Add other fields as per your API response
+}
+
+interface ActiveFilter {
+  key: string;
+  label: string;
+  value: string;
 }
 
 const Page = () => {
@@ -54,6 +66,15 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [propertyType, setPropertyType] = useState<string>("all");
   const [configuration, setConfiguration] = useState<string>("all");
+  const [bedrooms, setBedrooms] = useState<string>("all");
+  const [bathrooms, setBathrooms] = useState<string>("all");
+  const [balconies, setBalconies] = useState<string>("all");
+  const [minPrice, setMinPrice] = useState<string>("");
+  const [maxPrice, setMaxPrice] = useState<string>("");
+  const [locationFilter, setLocationFilter] = useState<string>("");
+  const [availabilityStatus, setAvailabilityStatus] = useState<string>("all");
+  const [ownership, setOwnership] = useState<string>("all");
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -67,8 +88,6 @@ const Page = () => {
         const fetchedProperties = response.data.properties ?? response.data ?? [];
         console.log(fetchedProperties)
         setProperties(fetchedProperties);
-      
-        
         setFilteredProperties(fetchedProperties);
       } catch (err) {
         console.error('Failed to fetch properties', err);
@@ -78,6 +97,49 @@ const Page = () => {
     };
     fetchProperties();
   }, [BASE_URL]);
+
+  // Update active filters array whenever any filter changes
+  useEffect(() => {
+    const filters: ActiveFilter[] = [];
+
+    if (searchQuery.trim()) {
+      filters.push({ key: 'search', label: 'Search', value: searchQuery });
+    }
+    if (propertyType !== "all") {
+      filters.push({ key: 'propertyType', label: 'Type', value: propertyType });
+    }
+    if (configuration !== "all") {
+      filters.push({ key: 'configuration', label: 'Config', value: configuration });
+    }
+    if (bedrooms !== "all") {
+      filters.push({ key: 'bedrooms', label: 'Bedrooms', value: `${bedrooms} BHK` });
+    }
+    if (bathrooms !== "all") {
+      filters.push({ key: 'bathrooms', label: 'Bathrooms', value: bathrooms });
+    }
+    if (balconies !== "all") {
+      filters.push({ key: 'balconies', label: 'Balconies', value: balconies });
+    }
+    if (minPrice || maxPrice) {
+      const priceLabel = minPrice && maxPrice 
+        ? `₹${minPrice} - ₹${maxPrice}` 
+        : minPrice 
+        ? `Min ₹${minPrice}` 
+        : `Max ₹${maxPrice}`;
+      filters.push({ key: 'price', label: 'Price', value: priceLabel });
+    }
+    if (locationFilter.trim()) {
+      filters.push({ key: 'location', label: 'City', value: locationFilter });
+    }
+    if (availabilityStatus !== "all") {
+      filters.push({ key: 'availability', label: 'Status', value: availabilityStatus });
+    }
+    if (ownership !== "all") {
+      filters.push({ key: 'ownership', label: 'Ownership', value: ownership });
+    }
+
+    setActiveFilters(filters);
+  }, [searchQuery, propertyType, configuration, bedrooms, bathrooms, balconies, minPrice, maxPrice, locationFilter, availabilityStatus, ownership]);
 
   // Apply filters whenever search query or filters change
   useEffect(() => {
@@ -105,14 +167,110 @@ const Page = () => {
       );
     }
 
+    // Bedrooms filter
+    if (bedrooms !== "all") {
+      filtered = filtered.filter(property =>
+        property?.bedroom?.toString() === bedrooms
+      );
+    }
+
+    // Bathrooms filter
+    if (bathrooms !== "all") {
+      filtered = filtered.filter(property =>
+        property?.bathroom?.toString() === bathrooms
+      );
+    }
+
+    // Balconies filter
+    if (balconies !== "all") {
+      filtered = filtered.filter(property =>
+        property?.balconies?.toString() === balconies
+      );
+    }
+
+    // Price range filter
+    if (minPrice || maxPrice) {
+      filtered = filtered.filter(property => {
+        const price =  Number(property?.price);
+        const min = minPrice ? parseFloat(minPrice) : 0;
+        const max = maxPrice ? parseFloat(maxPrice) : Infinity;
+        return price >= min && price <= max;
+      });
+    }
+
+    // Location filter
+    if (locationFilter.trim()) {
+      filtered = filtered.filter(property =>
+        property?.city?.toLowerCase().includes(locationFilter.toLowerCase())
+      );
+    }
+
+    // Availability status filter
+    if (availabilityStatus !== "all") {
+      filtered = filtered.filter(property =>
+        property?.AvailabilityStatus?.toLowerCase() === availabilityStatus.toLowerCase()
+      );
+    }
+
+    // Ownership filter
+    if (ownership !== "all") {
+      filtered = filtered.filter(property =>
+        property?.Ownership?.toLowerCase() === ownership.toLowerCase()
+      );
+    }
+
     setFilteredProperties(filtered);
-  }, [searchQuery, propertyType, configuration, properties]);
+  }, [searchQuery, propertyType, configuration, bedrooms, bathrooms, balconies, minPrice, maxPrice, locationFilter, availabilityStatus, ownership, properties]);
 
   const handleReset = () => {
     setSearchQuery("");
     setPropertyType("all");
     setConfiguration("all");
+    setBedrooms("all");
+    setBathrooms("all");
+    setBalconies("all");
+    setMinPrice("");
+    setMaxPrice("");
+    setLocationFilter("");
+    setAvailabilityStatus("all");
+    setOwnership("all");
     setFilteredProperties(properties);
+  };
+
+  const removeFilter = (filterKey: string) => {
+    switch(filterKey) {
+      case 'search':
+        setSearchQuery("");
+        break;
+      case 'propertyType':
+        setPropertyType("all");
+        break;
+      case 'configuration':
+        setConfiguration("all");
+        break;
+      case 'bedrooms':
+        setBedrooms("all");
+        break;
+      case 'bathrooms':
+        setBathrooms("all");
+        break;
+      case 'balconies':
+        setBalconies("all");
+        break;
+      case 'price':
+        setMinPrice("");
+        setMaxPrice("");
+        break;
+      case 'location':
+        setLocationFilter("");
+        break;
+      case 'availability':
+        setAvailabilityStatus("all");
+        break;
+      case 'ownership':
+        setOwnership("all");
+        break;
+    }
   };
 
   return (
@@ -142,14 +300,17 @@ const Page = () => {
         {/* Title */}
         <div className="py-2 px-5 md:-ml-20 flex items-start w-96">
           <h1 className={`${inter.className} font-bold text-gray-600 text-2xl flex items-center justify-center`}>
-            Property List <ChevronRight />
+           Property List <ChevronRight />
           </h1>
         </div>
+
+        {/* Active Filters Badge Display */}
+    
 
         {/* Filters */}
         <div className="flex w-11/12 max-w-md justify-between gap-3 items-center mb-4">
          
-         <div  className="flex gap-1 ">
+         <div className="flex gap-1">
 
          <Sheet>
       <SheetTrigger asChild>
@@ -160,16 +321,197 @@ const Page = () => {
           <Filter/>
           </Button>
       </SheetTrigger>
-      <SheetContent side="left" className={`z-99 ${inter.className} `}>
+      <SheetContent side="left" className={`z-99 ${inter.className} overflow-y-auto`}>
         <SheetHeader>
-          <SheetTitle className="text-2xl font-bold text-zinc-600 py-4 flex items-center px-3 " >Property Fliter <ChevronRightIcon/> </SheetTitle>
-
+          <SheetTitle className="text-2xl font-bold text-zinc-600 py-4 flex items-center gap-1 ">  <Filter fill="gray" color="gray"/>Property Filter <ChevronRightIcon/></SheetTitle>
         </SheetHeader>
-       
-        <SheetFooter>
-          <Button type="submit" variant={"selectdashed"}>Save changes</Button>
+        <div className="flex gap-4 flex-col w-full px-3 pb-6">
+          
+          {/* Property Type */}
+             {/* Location */}
+          <div>
+            <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
+              <MapPin size={16}/>City <ChevronRight size={18}/>
+            </Label>
+            <Input
+              type="text"
+              placeholder="Enter location..."
+              value={locationFilter}
+              onChange={(e) => setLocationFilter(e.target.value)}
+              className="w-full text-sm bg-white shadow rounded-full"
+            />
+          </div>
+          <div>
+
+
+            <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
+              <Building size={16}/> Property Type <ChevronRight size={18}/>
+            </Label>
+            <Select value={propertyType} onValueChange={setPropertyType}>
+              <SelectTrigger className="text-sm w-full bg-white shadow rounded-full">
+                <SelectValue placeholder="Property Type" />
+              </SelectTrigger>
+              <SelectContent className="z-99">
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="apartment"><Building size={14}/> Apartment</SelectItem>
+                <SelectItem value="plot / land"><Grid size={14}/> Plot / Land</SelectItem>
+                <SelectItem value="independent house / villa"><House size={14}/> Independent House / Villa</SelectItem>
+                <SelectItem value="farmhouse"><TreePalm size={14}/> Farmhouse</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Property Configuration */}
+          <div>
+            <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
+              <Home size={16}/> Property Configuration <ChevronRight size={18}/>
+            </Label>
+            <Select value={configuration} onValueChange={setConfiguration}>
+              <SelectTrigger className="w-full text-sm bg-white shadow rounded-full">
+                <SelectValue placeholder="Configuration" />
+              </SelectTrigger>
+              <SelectContent className="z-99">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="sell">Sell</SelectItem>
+                <SelectItem value="rent / lease">Rent / Lease</SelectItem>
+                <SelectItem value="paying guest">Paying Guest</SelectItem>
+                <SelectItem value="resell">Resell</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex gap-3">
+          {/* Bedrooms */}
+          <div>
+            <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
+              <Bed size={16}/> Bedrooms <ChevronRight size={18}/>
+            </Label>
+            <Select value={bedrooms} onValueChange={setBedrooms}>
+              <SelectTrigger className="w-full text-sm bg-white shadow rounded-full">
+                <SelectValue placeholder="Bedrooms" />
+              </SelectTrigger>
+              <SelectContent className="z-99">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="1">1 BHK</SelectItem>
+                <SelectItem value="2">2 BHK</SelectItem>
+                <SelectItem value="3">3 BHK</SelectItem>
+                <SelectItem value="4">4 BHK</SelectItem>
+                <SelectItem value="5">5+ BHK</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Bathrooms */}
+          <div>
+            <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
+              <Bath size={16}/> Bathrooms <ChevronRight size={18}/>
+            </Label>
+            <Select value={bathrooms} onValueChange={setBathrooms}>
+              <SelectTrigger className="w-full text-sm bg-white shadow rounded-full">
+                <SelectValue placeholder="Bathrooms" />
+              </SelectTrigger>
+              <SelectContent className="z-99">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="3">3</SelectItem>
+                <SelectItem value="4">4+</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          </div>
+          
+
+          {/* Balconies */}
+          <div>
+            <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
+              <Home size={16}/> Balconies <ChevronRight size={18}/>
+            </Label>
+            <Select value={balconies} onValueChange={setBalconies}>
+              <SelectTrigger className="w-full text-sm bg-white shadow rounded-full">
+                <SelectValue placeholder="Balconies" />
+              </SelectTrigger>
+              <SelectContent className="z-99">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="0">0</SelectItem>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="3">3+</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Price Range */}
+          <div>
+            <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
+              <DollarSign size={16}/> Price Range <ChevronRight size={18}/>
+            </Label>
+            <div className="flex gap-2">
+              <Input
+                type="number"
+                placeholder="Min Price"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
+                className="w-full text-sm bg-white shadow rounded-full"
+              />
+              <Input
+                type="number"
+                placeholder="Max Price"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+                className="w-full text-sm bg-white shadow rounded-full"
+              />
+            </div>
+          </div>
+
+         
+
+          {/* Availability Status */}
+          <div>
+            <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
+              <CheckCircle size={16}/> Availability Status <ChevronRight size={18}/>
+            </Label>
+            <Select value={availabilityStatus} onValueChange={setAvailabilityStatus}>
+              <SelectTrigger className="w-full text-sm bg-white shadow rounded-full">
+                <SelectValue placeholder="Availability" />
+              </SelectTrigger>
+              <SelectContent className="z-99">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="ready to move">Ready to move</SelectItem>
+                <SelectItem value="under construction">Under Construction</SelectItem>
+                <SelectItem value="comming soon">Comming Soon</SelectItem>
+               
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Ownership */}
+          <div>
+            <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
+              <Key size={16}/> Ownership <ChevronRight size={18}/>
+            </Label>
+            <Select value={ownership} onValueChange={setOwnership}>
+              <SelectTrigger className="w-full text-sm bg-white shadow rounded-full">
+                <SelectValue placeholder="Ownership" />
+              </SelectTrigger>
+              <SelectContent className="z-99">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="freehold">Freehold</SelectItem>
+                <SelectItem value="leasehold">Leasehold</SelectItem>
+                <SelectItem value="co-operative society">Co-operative Society</SelectItem>
+                <SelectItem value="power of attorney">Power of Attorney</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+        </div>
+        <SheetFooter className="px-3 gap-2">
+          <Button type="button" variant="selectdashed" className="w-full" onClick={handleReset}>
+            Reset All Filters
+          </Button>
           <SheetClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant="outline" className="w-full">Apply & Close</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>
@@ -193,8 +535,8 @@ const Page = () => {
               <SelectContent>
                 <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="apartment"><Building size={10}/> Apartment</SelectItem>
-                <SelectItem value="plot / land"> <Grid size={10}/>Plot / Land </SelectItem>
-                <SelectItem value="independent house / villa"> <House size={10}/>Independent House / Villa </SelectItem>
+                <SelectItem value="plot / land"><Grid size={10}/> Plot / Land</SelectItem>
+                <SelectItem value="independent house / villa"><House size={10}/> Independent House / Villa</SelectItem>
                 <SelectItem value="farmhouse"><TreePalm size={10}/> Farmhouse</SelectItem>
               </SelectContent>
             </Select>
@@ -208,13 +550,50 @@ const Page = () => {
                 <SelectItem value="all">All</SelectItem>
                 <SelectItem value="sell">Sell</SelectItem>
                 <SelectItem value="rent / lease">Rent / Lease</SelectItem>
-                    <SelectItem value="paying guest">Paying Guest</SelectItem>
-                       <SelectItem value="resell">Resell</SelectItem>
+                <SelectItem value="paying guest">Paying Guest</SelectItem>
+                <SelectItem value="resell">Resell</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
-
+    {activeFilters.length > 0 && (
+          <motion.div 
+           initial={{opacity:0 , y:10}} 
+            animate={{opacity:10 , y:0}}
+        
+           
+           className="w-11/12 max-w-md mb-3 p-3 bg-white  rounded-lg shadow">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-bold text-gray-600">Active Filters</span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleReset}
+                className="text-xs h-6 px-2"
+              >
+                Clear All
+              </Button>
+            </div>
+            <div className={` ${ inter.className} flex flex-wrap gap-2`}>
+              {activeFilters.map((filter) => (
+                <Badge 
+                  key={filter.key} 
+                  variant="filter" 
+                  className="px-2 py-1 flex items-center gap-1"
+                >
+                  <span className="text-xs font-medium">{filter.label}:</span>
+                  <span className="text-xs capitalize">{filter.value}</span>
+                  <button
+                    onClick={() => removeFilter(filter.key)}
+                    className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
+                  >
+                    <X size={12} />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          </motion.div>
+        )}
         {/* Property Cards */}
         <div className='h-full w-96 px-5 flex mt-2 flex-col gap-2'>
           {properties.length === 0 ? (

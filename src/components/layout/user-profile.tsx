@@ -1,9 +1,19 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { ChevronRight, User, Package, MapPin, CreditCard, Settings, HelpCircle, LogOut } from 'lucide-react';
+import { ChevronRight, User, Package, MapPin, CreditCard, Settings, HelpCircle, LogOut, BookOpen } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
+import Cookies from 'js-cookie'; 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+
 
 interface User {
     name?: string;
@@ -17,6 +27,8 @@ const UserProfile: React.FC = () => {
     const router = useRouter();
     const BASEURL: string = process.env.NEXT_PUBLIC_API_URL ?? "";
     const [user, setUser] = useState<User | null>(null);
+    const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+    
 
     const logout = async (): Promise<void> => {
         try {
@@ -33,6 +45,15 @@ const UserProfile: React.FC = () => {
         }
     };
 
+    const handleLogoutClick = () => {
+        setShowLogoutDialog(true);
+    };
+
+    const handleConfirmLogout = () => {
+        setShowLogoutDialog(false);
+        logout();
+    };
+
     useEffect(() => {
         const storedUser = localStorage.getItem("userdata");
         if (storedUser) {
@@ -42,13 +63,13 @@ const UserProfile: React.FC = () => {
     }, []);
 
     const menuItems = [
-        { icon: User, label: 'Personal Information', onClick: () => console.log('Personal Info') },
+        { icon: User, label: 'Personal Information', onClick: () => router.push("/dashboard/user/profile/personal-info") },
         // { icon: Package, label: 'My Orders', onClick: () => console.log('My Orders') },
-        { icon: MapPin, label: 'Addresses', onClick: () => console.log('Addresses') },
+        { icon: BookOpen, label: 'Terms and Condition', onClick: () => router.push("/dashboard/user/profile/terms") },
         // { icon: CreditCard, label: 'Payment Methods', onClick: () => console.log('Payment Methods') },
          // { icon: Settings, label: 'Settings', onClick: () => console.log('Settings') },
-        { icon: HelpCircle, label: 'Help & Support', onClick: () => console.log('Help & Support') },
-        { icon: LogOut, label: 'Logout', onClick: logout, isLogout: true },
+        { icon: HelpCircle, label: 'Help & Support', onClick: () => router.push("/dashboard/user/profile/help") },
+        { icon: LogOut, label: 'Logout', onClick: handleLogoutClick, isLogout: true },
     ];
 
     return (
@@ -92,6 +113,32 @@ const UserProfile: React.FC = () => {
                     ))}
                 </div>
             </div>
+
+            {/* Logout Confirmation Dialog */}
+            <Dialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Confirm Logout</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to logout? You'll need to sign in again to access your account.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="gap-2">
+                        <Button 
+                            variant="outline" 
+                            onClick={() => setShowLogoutDialog(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button 
+                            variant="destructive" 
+                            onClick={handleConfirmLogout}
+                        >
+                            Logout
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

@@ -1,6 +1,8 @@
 import React from 'react';
 import { MapPin, Home, Bed, Bath, Square, Heart, Building, Grid2X2, House, Star, CheckCircle } from 'lucide-react';
-
+import Link from 'next/link';
+ 
+ 
 export default function RecommandationCard({property}) {
   return (
     <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
@@ -52,11 +54,14 @@ export default function RecommandationCard({property}) {
         {/* Property Type */}
 
         {/* Price and Action */}
-        <div className="flex items-start justify-between flex-col ">
-    
+        <div className="flex items-start justify-between w-full flex-col ">
+       
+       <Link className='w-full'  href={`/dashboard/user/find-property/property-list/proprerty-info/${property.id}`}>
+       
           <button className="bg-[#2396C6]  hover:bg-blue-700 text-white px-1 py-1 mt-2 w-full rounded-lg font-semibold text-sm transition-colors duration-200 shadow-md hover:shadow-lg">
            Visit Property
           </button>
+       </Link>
         </div>
       </div>
     </div>

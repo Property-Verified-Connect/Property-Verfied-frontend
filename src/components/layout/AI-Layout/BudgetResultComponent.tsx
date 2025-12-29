@@ -3,6 +3,7 @@ import {motion} from "framer-motion"
 import PropertyCards from "@/components/shared/property-cards";
 import { Button } from "@/components/ui/button";
 import RecommandationCard from "@/components/shared/recommdationCard";
+import Link from "next/link";
 
 const property={
   property_name:"Rajshree"
@@ -117,7 +118,7 @@ const BudgetResultComponent = ({ answers ,  predictions ,BudgetProperties }: { a
       </div> */}
   
      {  BudgetProperties.length !== 0 ?
-        BudgetProperties.map((val ,index)=>(
+        BudgetProperties?.map((val ,index)=>(
           
           <RecommandationCard key={index} property={val} />
         ))
@@ -126,10 +127,13 @@ const BudgetResultComponent = ({ answers ,  predictions ,BudgetProperties }: { a
      }
        
    <div className="flex w-full items-start justify-between flex-col ">
-      
+      <Link href={"/dashboard/user/find-property/property-list"} className="w-full">
+    
           <button className="bg-[#2396C6]  hover:bg-sky-600 text-white px-2 py-2 mt-2 w-full rounded-lg font-semibold text-sm transition-colors duration-200 shadow-md hover:shadow-lg">
            See more Property
           </button>
+  
+      </Link>
         </div>
     </div>
   </div>

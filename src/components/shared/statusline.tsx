@@ -5,8 +5,8 @@ function StatusTimeline({ status }) {
   const steps = [
     "pending",
     "approved",
-    "partner pending",
-    "Contact to Partner"
+    "contact",
+    "perchase"
   ];
 
   const activeIndex = steps.indexOf(status);
@@ -14,7 +14,7 @@ function StatusTimeline({ status }) {
   return (
     <div className="w-full mt-4">
       {/* Circles + Lines */}
-      <div className="flex items-center w-96">
+      <div className="flex items-center w-full">
         {steps.map((step, index) => (
           <div key={index} className="flex items-center w-full">
             
