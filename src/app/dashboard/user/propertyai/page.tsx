@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   ArrowLeft,
   Bot,
@@ -47,6 +49,32 @@ const assistantOptions = [
   { id: "discuss", label: "AI Discuss", icon: MessageSquare },
 ];
 
+
+
+function useTypingEffect(text: string, speed = 20) {
+  const [displayedText, setDisplayedText] = useState("");
+
+  useEffect(() => {
+    if (!text) return;
+
+    setDisplayedText("");
+    let index = 0;
+
+    const interval = setInterval(() => {
+      setDisplayedText((prev) => prev + text[index]);
+      index++;
+
+      if (index >= text.length) {
+        clearInterval(interval);
+      }
+    }, speed);
+
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return displayedText;
+}
+
 // Result Components
 
 const DiscussResultComponent = ({
@@ -54,7 +82,12 @@ const DiscussResultComponent = ({
   predictions,
 }: {
   answers: string[];
-}) => (
+  
+}) => 
+{
+  const typedText = useTypingEffect(predictions.answer, 15);
+
+ return (
   <div className="bg-white rounded-2xl p-4 shadow-lg max-w-md">
     <div className="flex items-center gap-2 mb-4">
       <div className="bg-orange-100 p-2 rounded-full">
@@ -62,8 +95,12 @@ const DiscussResultComponent = ({
       </div>
       <h3 className="font-bold text-lg">AI Discussion</h3>
     </div>
+    
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+     {typedText}
+    </ReactMarkdown>
 
-    <h1> {predictions.answer}</h1>
+
 
     <div className="mt-4 p-3 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg">
       <p className="text-xs text-gray-700">
@@ -73,6 +110,7 @@ const DiscussResultComponent = ({
     </div>
   </div>
 );
+}
 
 export default function AIAssistantChat() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -118,6 +156,7 @@ export default function AIAssistantChat() {
 
   const handleModeSelection = (mode: AssistantMode) => {
     setCurrentMode(mode);
+        setdisplayback(true);
     setQuestionIndex(0);
     setUserAnswers([]);
 
@@ -236,12 +275,15 @@ export default function AIAssistantChat() {
 
   const handleOptionSelect = (option: string) => {
     handleAnswer(option);
+     setdisplayback(true);
+       
   };
 
   const handleTextSubmit = () => {
     if (input.trim() === "") return;
     handleAnswer(input);
     setInput("");
+        setdisplayback(true);
   };
 
   const handleAnswer = (answer: string) => {

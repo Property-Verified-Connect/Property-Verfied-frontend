@@ -49,6 +49,13 @@ interface Property {
   balconies?: number;
   availability_status?: string;
   ownership?: string;
+  property_type?: string;
+  looking_for?: string;
+  bedroom?: number;
+  bathroom?: number;
+  city?: string;
+  AvailabilityStatus?: string;
+  Ownership?: string;
   // Add other fields as per your API response
 }
 
@@ -75,9 +82,11 @@ const Page = () => {
   const [availabilityStatus, setAvailabilityStatus] = useState<string>("all");
   const [ownership, setOwnership] = useState<string>("all");
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchProperties = async () => {
+      setIsLoading(true);
       try {
         const response = await axios.get(`${BASE_URL}/api/user/getAllApprovedProperty`, {
           headers: {
@@ -93,6 +102,8 @@ const Page = () => {
         console.error('Failed to fetch properties', err);
         setProperties([]);
         setFilteredProperties([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchProperties();
@@ -556,12 +567,11 @@ const Page = () => {
             </Select>
           </div>
         </div>
-    {activeFilters.length > 0 && (
+        
+        {activeFilters.length > 0 && (
           <motion.div 
            initial={{opacity:0 , y:10}} 
             animate={{opacity:10 , y:0}}
-        
-           
            className="w-11/12 max-w-md mb-3 p-3 bg-white  rounded-lg shadow">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-bold text-gray-600">Active Filters</span>
@@ -594,13 +604,30 @@ const Page = () => {
             </div>
           </motion.div>
         )}
+        
         {/* Property Cards */}
         <div className='h-full w-96 px-5 flex mt-2 flex-col gap-2'>
-          {properties.length === 0 ? (
+          {isLoading ? (
             // Loading state
             <div className='flex flex-col gap-1'>
               <Skeleton className='h-30 w-full' />
               <Skeleton className='h-30 w-full' />
+            </div>
+          ) : properties.length === 0 ? (
+            // Empty properties state - NO properties at all
+            <div className="text-center py-10">
+              <Home size={64} className="mx-auto text-gray-300 mb-4" />
+              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+                No Properties Available
+              </h2>
+              <p className="text-gray-500 mb-4">
+                There are currently no properties listed.
+              </p>
+              <Link href="/dashboard/user">
+                <Button className="rounded-full">
+                  Back to Dashboard
+                </Button>
+              </Link>
             </div>
           ) : filteredProperties.length > 0 ? (
             // Display filtered properties
@@ -608,12 +635,18 @@ const Page = () => {
               <PropertyCards key={p.id || i} property={p} type="User" />
             ))
           ) : (
-            // No results found
+            // No results found after applying filters
             <div className="text-center py-10 text-gray-500">
-              <p>No properties found matching your filters.</p>
+              <Filter size={48} className="mx-auto text-gray-300 mb-4" />
+              <p className="text-lg font-medium text-gray-700 mb-2">
+                No properties found
+              </p>
+              <p className="mb-4">
+                No properties match your current filters.
+              </p>
               <Button
-                variant="link"
-                className="mt-2"
+                variant="outline"
+                className="rounded-full"
                 onClick={handleReset}
               >
                 Reset filters

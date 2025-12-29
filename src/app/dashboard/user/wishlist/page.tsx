@@ -30,6 +30,8 @@ interface Property {
   config: string;
   price: string;
   img: string;
+  property_type?: string;
+  looking_for?: string;
   // Add other fields as per your API response
 }
 
@@ -41,9 +43,11 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [propertyType, setPropertyType] = useState<string>("all");
   const [configuration, setConfiguration] = useState<string>("all");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchProperties = async () => {
+      setIsLoading(true);
       try {
         const response = await axios.get(`${BASE_URL}/api/user/wishlist/see`, {
           headers: {
@@ -51,18 +55,19 @@ const Page = () => {
             "Content-Type": "application/json",
           }
         });
- const fetchedProperties =
-  (response.data.properties || []).map(
-    (item: any) => item.property_id
-  );
+        const fetchedProperties =
+          (response.data.properties || []).map(
+            (item: any) => item.property_id
+          );
         console.log(fetchedProperties)
         setProperties(fetchedProperties);
-        
         setFilteredProperties(fetchedProperties);
       } catch (err) {
         console.error('Failed to fetch properties', err);
         setProperties([]);
         setFilteredProperties([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchProperties();
@@ -131,24 +136,22 @@ const Page = () => {
         {/* Title */}
         <div className="py-2 px-5 md:-ml-20 flex items-center w-96">
           <h1 className={`${inter.className} font-bold text-gray-600 text-2xl flex items-center justify-center`}>
-         <span className="flex items-center  gap-1"><Heart size={22} /> Your Wishlist</span> <ChevronRight size={23} />
+            <span className="flex items-center gap-1"><Heart size={22} /> Your Wishlist</span> <ChevronRight size={23} />
           </h1>
         </div>
 
         {/* Filters */}
         <div className="flex w-11/12 max-w-md justify-between gap-3 items-center mb-4">
-         
-         <div  className="flex gap-1 ">
+          <div className="flex gap-1">
+            <Button
+              variant="outline"
+              className="text-sm bg-white font-semibold shadow px-3 py-1 rounded-full"
+              onClick={handleReset}
+            >
+              Reset
+            </Button>
+          </div>
           
-          <Button
-            variant="outline"
-            className="text-sm bg-white font-semibold shadow px-3 py-1 rounded-full"
-            onClick={handleReset}
-          >
-            Reset
-          </Button>
-
-         </div>
           <div className="flex items-center gap-2">
             {/* Property Type Select */}
             <Select value={propertyType} onValueChange={setPropertyType}>
@@ -173,8 +176,8 @@ const Page = () => {
                 <SelectItem value="all">All</SelectItem>
                 <SelectItem value="sell">Sell</SelectItem>
                 <SelectItem value="rent / lease">Rent / Lease</SelectItem>
-                    <SelectItem value="paying guest">Paying Guest</SelectItem>
-                       <SelectItem value="resell">Resell</SelectItem>
+                <SelectItem value="paying guest">Paying Guest</SelectItem>
+                <SelectItem value="resell">Resell</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -182,11 +185,27 @@ const Page = () => {
 
         {/* Property Cards */}
         <div className='h-full w-96 px-5 flex mt-2 flex-col gap-2'>
-          {properties.length === 0 ? (
+          {isLoading ? (
             // Loading state
             <div className='flex flex-col gap-1'>
               <Skeleton className='h-30 w-full' />
               <Skeleton className='h-30 w-full' />
+            </div>
+          ) : properties.length === 0 ? (
+            // Empty wishlist state - NO properties at all
+            <div className="text-center py-10">
+              <Heart size={64} className="mx-auto text-gray-300 mb-4" />
+              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+                Your Wishlist is Empty
+              </h2>
+              <p className="text-gray-500 mb-4">
+                Start adding properties you love to your wishlist!
+              </p>
+              <Link href="/properties">
+                <Button className="rounded-full">
+                  Browse Properties
+                </Button>
+              </Link>
             </div>
           ) : filteredProperties.length > 0 ? (
             // Display filtered properties
@@ -194,12 +213,18 @@ const Page = () => {
               <PropertyCards key={p.id || i} property={p} mode="wishlist" />
             ))
           ) : (
-            // No results found
+            // No results found after applying filters
             <div className="text-center py-10 text-gray-500">
-              <p>No properties found matching your filters.</p>
+              <Filter size={48} className="mx-auto text-gray-300 mb-4" />
+              <p className="text-lg font-medium text-gray-700 mb-2">
+                No properties found
+              </p>
+              <p className="mb-4">
+                No properties match your current filters.
+              </p>
               <Button
-                variant="link"
-                className="mt-2"
+                variant="outline"
+                className="rounded-full"
                 onClick={handleReset}
               >
                 Reset filters
