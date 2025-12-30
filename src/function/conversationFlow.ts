@@ -71,31 +71,52 @@ const conversationFlows = {
     },
   ],
   rent: [
-    {
-      question: "Looking for rent options? Which area are you interested in?",
-      options: ["Nagpur", "Mumbai", "Pune", "Nashik", "Other"],
-      allowText: true
-    },
-    {
-      question: "Prefer shared rooms or full flat?",
-      options: ["Shared room", "Full flat - 1BHK", "Full flat - 2BHK"],
-      allowText: false
-    },
-    {
-      question: "What's your budget range?",
-      options: ["₹5,000-10,000", "₹10,000-15,000", "₹15,000-20,000", "₹20,000+"],
-      allowText: true
-    },
-    {
-      question: "What's your profession?",
-      options: ["IT Professional", "Govt employee", "Student", "Business", "Other"],
-      allowText: true
-    },
-    {
-      question: "Lifestyle preference — quiet or social?",
-      options: ["Quiet", "Social"],
-      allowText: false
-    },
+  {
+  question: "Looking for rental options? Which area are you interested in?",
+  options: ["Nagpur", "Mumbai", "Pune", "Nashik", "Other"],
+  allowText: true
+},
+{
+  question: "What is your budget range?",
+  options: ["₹5,000-10,000", "₹10,000-15,000", "₹15,000-20,000", "₹20,000+"],
+  allowText: true
+},
+{
+  question: "Do you prefer shared rooms or a full flat?",
+  options: ["Room", "Apartment"],
+  allowText: false
+},
+{
+  question: "What is your profession?",
+  options: ["IT Professional", "Govt employee", "Student", "Business", "Other"],
+  allowText: true
+},
+{
+  question: "Lifestyle preference — quiet or social?",
+  options: ["Quiet", "Social"],
+  allowText: false
+},
+{
+  question: "What type of roommates do you prefer?",
+  options: ["Quiet & focused", "Balanced mix", "Friendly & social"],
+  allowText: true
+},
+{
+  question: "What is your food preference?",
+  options: ["Vegetarian", "Non-Vegetarian", "Eggetarian"],
+  allowText: false
+},
+{
+  question: "Do you smoke or drink?",
+  options: ["Do Somking", "Do Drinking", "Do Both", "Do None"],
+  allowText: false
+},
+{
+  question: "What is your religion? (Only for searching purposes)",
+  options: [" Hindu", "Muslim", "Sikh", "Christian", " Jain / Buddhist", " Other belief / mixed background", "Prefer not to say"],
+  allowText: true
+}
+
   ],
   discuss: [
     {
