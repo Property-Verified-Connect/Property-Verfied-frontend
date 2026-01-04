@@ -1,9 +1,10 @@
 import React from 'react';
-import { MapPin, Home, Bed, Bath, Square, Heart, Building, Grid2X2, House, Star, CheckCircle } from 'lucide-react';
+import { MapPin, Home, Bed, Bath, Square, Heart, Building, Grid2X2, House, Star, CheckCircle, PanelBottom } from 'lucide-react';
 import Link from 'next/link';
+import { Span } from 'next/dist/trace';
  
  
-export default function RecommandationCard({property}) {
+export default function RecommandationCard({property ,type}) {
   return (
     <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Image Section */}
@@ -41,7 +42,34 @@ export default function RecommandationCard({property}) {
 
                  <span className="bg-gray-100 text-gray-700 text-xl font-semibold px-2 py-1 rounded">
               ₹{property.price.toLocaleString('en-IN')}
+              
+               {type == "Rent" && <span className='text-sm'> / month</span>}
             </span>
+
+            {
+              type =="Rent" &&    <>
+              <div className='h-10 flex items-center justify-center   mt-2 overflow-hidden rounded-xl w-full bg-slate-100'>
+                                <div className='h-full w-[33%] gap-1 flex items-center justify-center  mt-1 overflow-hidden  '>
+                               { property?.bedroom}
+                                <Bed size={20}/>
+
+                          </div>
+                          
+                            <div className='h-10  w-[33%] mt-1 flex gap-1 items-center justify-center overflow-hidden  '>
+                                     { property?.bathroom}
+                              <Bath size={20}/>
+                          </div>
+                         
+                          </div>
+
+                           <div className='flex items-center justify-center mt-3 bg-slate-100 p-2 rounded-xl  gap-10 '>
+              <h1 className='text-xs text-center'> <strong>Capacity </strong> <br /> {property.capacity}</h1>
+              <h1 className='text-xs text-center'> <strong>Tetants </strong><br />  {property.alreadyrent || "None"} </h1>
+               <h1 className='text-xs text-center'> <strong>Empty </strong> <br /> {property.capacity - property.alreadyrent || "None"} </h1>
+              </div>
+              </> 
+              
+            }
           
 
         <div className="flex items-center h-auto mt-1   gap-2">

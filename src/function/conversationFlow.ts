@@ -77,9 +77,14 @@ const conversationFlows = {
   allowText: true
 },
 {
+  question: "Prefer shared rooms or private?",
+  options: ["Private", "Shared"],
+  allowText: false
+},
+{
   question: "What is your budget range?",
   options: ["₹5,000-10,000", "₹10,000-15,000", "₹15,000-20,000", "₹20,000+"],
-  allowText: true
+  allowText: false
 },
 {
   question: "Do you prefer shared rooms or a full flat?",
@@ -108,7 +113,7 @@ const conversationFlows = {
 },
 {
   question: "Do you smoke or drink?",
-  options: ["Do Somking", "Do Drinking", "Do Both", "Do None"],
+  options: ["Do Smoking", "Do Drinking", "Do Both", "Do None"],
   allowText: false
 },
 {

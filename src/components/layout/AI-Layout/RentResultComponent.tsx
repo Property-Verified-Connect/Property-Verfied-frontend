@@ -1,3 +1,4 @@
+import RecommandationCard from '@/components/shared/recommdationCard';
 import { Building2, MapPin, Home, IndianRupee, Star, Bed, Bath, PanelBottom, Badge } from 'lucide-react';
 import React from 'react'
 
@@ -50,50 +51,55 @@ const RentResultComponent = ({ answers , predictions }: { answers: string[] }) =
  {
   predictions.length !== 0
   ?
-    <div className='h-auto w-full p-2 bg-white  rounded-xl'>
-            <div className='h-40  rounded-2xl overflow-hidden w-full '>
-                   <img src={predictions[0]?.photos[0]} alt="" />
-            </div>
-               <div className='h-10 flex items-center justify-center   mt-2 overflow-hidden rounded-xl w-full bg-slate-100'>
-                  <div className='h-full w-[33%] gap-1 flex items-center justify-center  mt-1 overflow-hidden  '>
-                 { predictions[0]?.bedroom}
-                  <Bed size={20}/>
-            </div>
-              <div className='h-10  w-[33%] mt-1 flex gap-1 items-center justify-center overflow-hidden  '>
-                       { predictions[0]?.bathroom}
-                <Bath size={20}/>
-            </div>
-              <div className='h-10 w-[33%]  mt-1 flex gap-1 items-center justify-center  overflow-hidden  '>
-                       { predictions[0]?.balconies}
-                <PanelBottom size={20}/>
-            </div>
-            </div>
-              <div className='  mt-2 overflow-hidden rounded-xl p-2 w-full '>
-                <h1 className='font-bold text-zinc-600'>{predictions[0].property_name}</h1>
-                <div className='flex gap-2 mt-2'>
-                <h1 className='text-xs'>{predictions[0].location}</h1>
-                    <div className='text-xs inline-flex rounded  bg-prv gap-1 items-center justify-center px-2 '> <Home size={12 }/> {predictions[0].property_type}</div>
-                </div>
+    // <div className='h-auto w-full p-2 bg-white  rounded-xl'>
+    //         <div className='h-40  rounded-2xl overflow-hidden w-full '>
+    //                <img src={predictions[0]?.photos[0]} alt="" />
+    //         </div>
+    //            <div className='h-10 flex items-center justify-center   mt-2 overflow-hidden rounded-xl w-full bg-slate-100'>
+    //               <div className='h-full w-[33%] gap-1 flex items-center justify-center  mt-1 overflow-hidden  '>
+    //              { predictions[0]?.bedroom}
+    //               <Bed size={20}/>
+    //         </div>
+    //           <div className='h-10  w-[33%] mt-1 flex gap-1 items-center justify-center overflow-hidden  '>
+    //                    { predictions[0]?.bathroom}
+    //             <Bath size={20}/>
+    //         </div>
+    //           <div className='h-10 w-[33%]  mt-1 flex gap-1 items-center justify-center  overflow-hidden  '>
+    //                    { predictions[0]?.balconies}
+    //             <PanelBottom size={20}/>
+    //         </div>
+    //         </div>
+    //           <div className='  mt-2 overflow-hidden rounded-xl p-2 w-full '>
+    //             <h1 className='font-bold text-zinc-600'>{predictions[0].property_name}</h1>
+    //             <div className='flex gap-2 mt-2'>
+    //             <h1 className='text-xs'>{predictions[0].location}</h1>
+    //                 <div className='text-xs inline-flex rounded  bg-prv gap-1 items-center justify-center px-2 '> <Home size={12 }/> {predictions[0].property_type}</div>
+    //             </div>
                 
-                <div className='flex items-center justify-center mt-3 bg-slate-100 p-2 rounded-xl  gap-10 '>
-                <h1 className='text-xs text-center'> <strong>Capacity </strong> <br /> {predictions[0].capacity}</h1>
-                <h1 className='text-xs text-center'> <strong>Tetants </strong><br />  {predictions[0].alreadyrent || "None"} </h1>
-                 <h1 className='text-xs text-center'> <strong>Empty </strong> <br /> {predictions[0].capacity-predictions[0].alreadyrent || "None"} </h1>
-                </div>
+    //             <div className='flex items-center justify-center mt-3 bg-slate-100 p-2 rounded-xl  gap-10 '>
+    //             <h1 className='text-xs text-center'> <strong>Capacity </strong> <br /> {predictions[0].capacity}</h1>
+    //             <h1 className='text-xs text-center'> <strong>Tetants </strong><br />  {predictions[0].alreadyrent || "None"} </h1>
+    //              <h1 className='text-xs text-center'> <strong>Empty </strong> <br /> {predictions[0].capacity-predictions[0].alreadyrent || "None"} </h1>
+    //             </div>
 
-                    <div className=' mt-3  p-2 rounded-xl  gap-10 '>
-                <h1 className='text-xs '> <strong>Tetant Profession :</strong>  {predictions[0].profession}</h1>
-                 <h1 className='text-xs '> <strong>Description :</strong>  {predictions[0].description}</h1>
-                  <h1 className='text-xs '> <strong>Partner :</strong>  {predictions[0].user_id.name}</h1>
-                    <h1 className='text-sm '> <strong>Price :</strong>  ₹{predictions[0].price}</h1>
-              <h1 className='text-sm '> <strong>Rent Price :</strong> {predictions[0].price} / {predictions[0].capacity} = ₹{predictions[0].price/predictions[0].capacity} Each Tetant</h1>
+    //                 <div className=' mt-3  p-2 rounded-xl  gap-10 '>
+    //             <h1 className='text-xs '> <strong>Tetant Profession :</strong>  {predictions[0].profession}</h1>
+    //              <h1 className='text-xs '> <strong>Description :</strong>  {predictions[0].description}</h1>
+    //               <h1 className='text-xs '> <strong>Partner :</strong>  {predictions[0].user_id.name}</h1>
+    //                 <h1 className='text-sm '> <strong>Price :</strong>  ₹{predictions[0].price}</h1>
+    //           <h1 className='text-sm '> <strong>Rent Price :</strong> {predictions[0].price} / {predictions[0].capacity} = ₹{predictions[0].price/predictions[0].capacity} Each Tetant</h1>
                   
-                  </div>
-            </div>
-    <button className="w-full mt-4 bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition-colors">
-      Schedule Property Visit
-    </button>
-    </div>
+    //               </div>
+    //         </div>
+    // <button className="w-full mt-4 bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition-colors">
+    //   Schedule Property Visit
+    // </button>
+    // </div>
+
+       predictions.map((val ,inx)=>(
+         <RecommandationCard key={inx} property={val} type ="Rent"/>
+
+       ))
   
   :
     <h1 className='text-center capitalize'>No match found</h1>

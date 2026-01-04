@@ -66,7 +66,7 @@ function HelpAndSupportPage() {
             We're here to help you with any questions or concerns
           </p>
           
-          <div className="space-y-8">
+          <div className="space-y-8 h-96 overflow-auto">
             {/* Contact Information Section */}
             <section className="bg-gray-50 rounded-lg mb-4">
               <h3 className="text-xl font-semibold text-gray-800 mb-4">Contact Us</h3>

@@ -194,14 +194,14 @@ const Page = () => {
           ) : properties.length === 0 ? (
             // Empty wishlist state - NO properties at all
             <div className="text-center py-10">
-              <Heart size={64} className="mx-auto text-gray-300 mb-4" />
+              <Heart size={64} fill="#2396C6" className="mx-auto text-[#2396C6] mb-4" />
               <h2 className="text-xl font-semibold text-gray-700 mb-2">
                 Your Wishlist is Empty
               </h2>
               <p className="text-gray-500 mb-4">
                 Start adding properties you love to your wishlist!
               </p>
-              <Link href="/properties">
+              <Link href="/dashboard/user/find-property/property-list">
                 <Button className="rounded-full">
                   Browse Properties
                 </Button>
@@ -213,9 +213,9 @@ const Page = () => {
               <PropertyCards key={p.id || i} property={p} mode="wishlist" />
             ))
           ) : (
-            // No results found after applying filters
+      
             <div className="text-center py-10 text-gray-500">
-              <Filter size={48} className="mx-auto text-gray-300 mb-4" />
+              <Filter size={48} fill="#2396C6" className="mx-auto text-[#2396C6] mb-4" />
               <p className="text-lg font-medium text-gray-700 mb-2">
                 No properties found
               </p>

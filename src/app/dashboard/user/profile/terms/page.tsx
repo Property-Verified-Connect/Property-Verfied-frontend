@@ -25,7 +25,7 @@ function TermsAndConditionsPage() {
   return (
     <>
       <Nav/>
-      <div className={`min-h-screen w-full bg-prv flex items-center justify-center  p-4 ${inter.className}`}>
+      <div className={`min-h-screen w-full bg-[#CDE4F9] flex items-center justify-center  p-4 ${inter.className}`}>
         <div className="bg-white rounded-lg shadow-xl mt-10 p-8 w-full max-w-4xl">
           <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center whitespace-nowrap">Terms and Conditions</h2>
           <p className="text-sm text-gray-500 text-center mb-6">

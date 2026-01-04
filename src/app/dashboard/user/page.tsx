@@ -9,6 +9,7 @@ import BottomNav from "@/components/shared/bottom-nav";
 import PropertyDashboard from "@/components/layout/user-menu-1";
 import UserProfile from "@/components/layout/user-profile";
 import Order from "@/components/layout/order";
+import InterestForm from "@/components/layout/InterestForm";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ export default function Page(): JSX.Element {
         )}
 
         <BottomNav active={active} setActive={setActive} type={"user"} />
+        {/* <InterestForm/> */}
       </div>
     </>
   );
