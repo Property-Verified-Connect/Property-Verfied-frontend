@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { getCookieValue } from '@/function/cookies';
+import inter from '@/lib/font/Inter';
+
 
 function InterestForm() {
   const [step, setStep] = useState(1); // 1 = logo only, 2 = form
@@ -14,12 +17,15 @@ function InterestForm() {
     otherProfession: '',
     propertyType: ''
   });
+
+  const BaseURL= process.env.NEXT_PUBLIC_API_URL
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setStep(2);
-    }, 5000);
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -33,14 +39,21 @@ function InterestForm() {
         profession: formData.profession === "Other" ? formData.otherProfession : formData.profession,
         propertyType: formData.propertyType
       };
-
-      const response = await fetch('https://api.example.com/property-interest', {
+        
+       console.log(submitData)
+      const response = await fetch(`${BaseURL}/api/user/SetUserInterest`, {
         method: 'POST',
         headers: {
+            "Authorization": `Bearer ${getCookieValue()}`,
           'Content-Type': 'application/json',
+              
         },
+        
         body: JSON.stringify(submitData)
       });
+
+      localStorage.clear()
+      window.location.reload();
 
       if (response.ok) {
         alert('Form submitted successfully!');
@@ -56,7 +69,7 @@ function InterestForm() {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#0000000c] bg-opacity-50 flex items-center justify-center z-50">
+    <div className={`fixed ${inter.className} inset-0 bg-[#0000000c] bg-opacity-50 flex items-center justify-center z-50`}>
       
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden relative">
         <AnimatePresence mode="wait">
@@ -85,6 +98,9 @@ function InterestForm() {
             >
               <div className="space-y-6">
                 {/* Area Question */}
+           <h1 className='text-2xl text-center text-gray-500'>
+             Lets Know About You 
+            </h1> 
                 <div className="space-y-3">
                   <Label className="text-md font-medium">Hi! Which area are you searching property in?</Label>
                   <div className="flex flex-wrap gap-2 mt-2">

@@ -5,9 +5,17 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { getCookieValue } from "@/function/cookies";
 
+type UserData = {
+  id: string;
+  email?: string;
+  role?: string;
+  is_Interested_filled?: boolean;
+};
+
 export default function useRedirectByRole() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<UserData | null>(null);
   const BASEURL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
@@ -15,19 +23,25 @@ export default function useRedirectByRole() {
 
     const checkRole = async () => {
       try {
-       
-        // 2️⃣ Check localStorage user data
-        if (!localStorage.getItem("userdata")) {
-          const res = await axios.get(`${BASEURL}/api/user/profile`, {
-      
-             headers: {
-          "Authorization": `Bearer ${getCookieValue()}`, 
-          "Content-Type": "application/json",
-        },
-          });
-          localStorage.setItem("userdata", JSON.stringify(res.data));
-        }
+        // 1️⃣ Try localStorage first
+        const stored = localStorage.getItem("userdata");
 
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (isMounted) setUser(parsed);
+        } else {
+          // 2️⃣ Fetch from backend
+          const res = await axios.get(`${BASEURL}/api/user/profile`, {
+            headers: {
+              Authorization: `Bearer ${getCookieValue()}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          localStorage.setItem("userdata", JSON.stringify(res.data));
+
+          if (isMounted) setUser(res.data);
+        }
       } catch (err) {
         console.error("Error checking role:", err);
         router.replace("/auth/login");
@@ -43,5 +57,6 @@ export default function useRedirectByRole() {
     };
   }, [router, BASEURL]);
 
-  return loading;
+  // ✅ RETURN USER
+  return { loading, user };
 }

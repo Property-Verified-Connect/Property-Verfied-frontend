@@ -1,6 +1,6 @@
 "use client";
 
-import React, { JSX, useState } from "react";
+import React, { JSX, useState, useEffect } from "react";
 import useRedirectByRole from "@/hooks/useRedirectByRole";
 import Nav from "@/components/layout/nav";
 import { Inter } from "next/font/google";
@@ -18,9 +18,15 @@ const inter = Inter({
 
 type ActiveTab = "Home" | "Menu" | "Profile" | string;
 
+type UserData = {
+  id: string;
+  email?: string;
+  role?: string;
+  is_Interested_filled?: boolean;
+};
+
 export default function Page(): JSX.Element {
-  // if your hook returns something other than boolean adjust the type accordingly
-  const loading = useRedirectByRole() as boolean;
+  const { loading, user } = useRedirectByRole();
   const [active, setActive] = useState<ActiveTab>("Home");
 
   if (loading) {
@@ -30,19 +36,19 @@ export default function Page(): JSX.Element {
   return (
     <>
       <Nav />
-      <div
-        className={`${inter.className} min-h-screen w-full flex flex-col   bg-prv pt-12 md:pt-20`}
-      >
+      <div className={`${inter.className} min-h-screen w-full flex flex-col bg-prv pt-12 md:pt-20`}>
         {active === "Home" ? (
           <PropertyDashboard />
         ) : active === "Menu" ? (
-         <Order/>
+          <Order />
         ) : (
-          <UserProfile/>
+          <UserProfile />
         )}
 
-        <BottomNav active={active} setActive={setActive} type={"user"} />
-        {/* <InterestForm/> */}
+        <BottomNav active={active} setActive={setActive} type="user" />
+
+        {/* ✅ NO reload needed */}
+        {user?.is_Interested_filled === false && <InterestForm />}
       </div>
     </>
   );
