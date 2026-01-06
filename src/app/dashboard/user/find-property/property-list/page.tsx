@@ -88,12 +88,7 @@ const Page = () => {
     const fetchProperties = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${BASE_URL}/api/user/getAllApprovedProperty`, {
-          headers: {
-            "Authorization": `Bearer ${getCookieValue()}`,
-            "Content-Type": "application/json",
-          }
-        });
+        const response = await axios.get(`/api/user/getProperty`);
         const fetchedProperties = response.data.properties ?? response.data ?? [];
         console.log(fetchedProperties)
         setProperties(fetchedProperties);

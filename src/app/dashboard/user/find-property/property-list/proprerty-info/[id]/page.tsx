@@ -122,15 +122,9 @@ const PropertyDetails: React.FC = () => {
     const fetchProperties = async (): Promise<void> => {
       try {
         const response = await axios.post<ApiResponse>(
-          `${BASE_URL}/api/user/getApprovedPropertybyID`,
+          `/api/user/getPropertybyID`,
           { id },
-          {
-            headers: {
-              "Authorization": `Bearer ${getCookieValue()}`, 
-              "Content-Type": "application/json",
-            }
-          }
-        );
+         );
 
         setPropertyDetails(response.data.properties);
         console.log("Fetched property:", response.data);
@@ -222,14 +216,9 @@ const isValidTimeSlot = (time: string): boolean => {
 
     try {
       const response: AxiosResponse<BookingResponse> = await axios.post(
-        `${BASE_URL}/api/user/setApprovalBooking`,
+        `/api/user/setBooking`,
         formData,
-        {
-          headers: {
-            "Authorization": `Bearer ${getCookieValue()}`, 
-            "Content-Type": "application/json",
-          },
-        }
+       
       );
 
       setIsBooking(false);

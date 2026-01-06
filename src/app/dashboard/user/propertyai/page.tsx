@@ -219,14 +219,9 @@ export default function AIAssistantChat() {
       const questions = conversationFlows[mode].map((item) => item.question);
 
       const response = await axios.post(
-        `${BaseURL}/api/ai/genrate`,
+        `/api/user/propertyAI`,
         { mode, answers, questions },
-        {
-          headers: {
-            Authorization: `Bearer ${getCookieValue()}`,
-            "Content-Type": "application/json",
-          },
-        }
+       
       );
 
       console.log(response.data);

@@ -31,12 +31,7 @@ export default function useRedirectByRole() {
           if (isMounted) setUser(parsed);
         } else {
           // 2️⃣ Fetch from backend
-          const res = await axios.get(`${BASEURL}/api/user/profile`, {
-            headers: {
-              Authorization: `Bearer ${getCookieValue()}`,
-              "Content-Type": "application/json",
-            },
-          });
+          const res = await axios.get(`/api/user/profile`);
 
           localStorage.setItem("userdata", JSON.stringify(res.data));
 

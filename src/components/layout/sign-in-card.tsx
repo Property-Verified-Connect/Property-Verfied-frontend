@@ -77,7 +77,7 @@ export default function SignInForm(): JSX.Element {
     if (Object.keys(newErrors).length === 0) {
       try {
         const res = await axios.post<{ message: string }>(
-          `${BASEURL}/api/auth/signup`,
+          `/api/auth/signIn`,
           {
             name: formData.name,
             email: formData.email,
@@ -86,7 +86,7 @@ export default function SignInForm(): JSX.Element {
             city: formData.city,
             role: formData.role,
           },
-          { withCredentials: true }
+          
         );
 
         alert(res.data.message);

@@ -10,10 +10,9 @@ export function getCookieValue() {
 
 
 
-export async function getServerCookieValue(name: string = 'client_token_partner') {
+export async function getServerCookieValue(name: string = 'client_token_user') {
   const { cookies } = await import('next/headers');
   const cookieStore =  await cookies();
   console.log(cookieStore)
   return   cookieStore.get(name)?.value || null;
 }
-

@@ -10,7 +10,7 @@ import MiddlewareLoader from "../shared/middleware-loader";
 function Order() {
   const [Orders, setOrders] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const BASEURL = process.env.NEXT_PUBLIC_API_URL;
+
   
   const [active, setActive] = useState<ActiveTab>("Home");
 
@@ -18,12 +18,10 @@ function Order() {
   useEffect(() => {
     const getOrder = async () => {
       try {
-        const response = await axios.get(`${BASEURL}/api/user/getUserOrder`, {
-          withCredentials: true,
-        });
+        const response = await axios.get(`/api/user/getOrder`,);
 
         setOrders(response.data.booking);
-        console.log(response.data.booking)
+        console.log(response)
       } catch (error) {
         console.error("something went wrong", error);
       }

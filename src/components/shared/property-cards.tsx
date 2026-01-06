@@ -63,14 +63,8 @@ const handleAddToWishlist = async (propertyId: string ) => {
     }
 
     const response = await axios.post(
-      `${BaseUrl}/api/user/wishlist/add`,
+      `/api/user/wishlist/add`,
       { propertyId },
-      {
-        headers: {
-          Authorization: `Bearer ${getCookieValue()}`,
-          "Content-Type": "application/json",
-        },
-      }
     );
 
     console.log(response.data.message);
@@ -111,14 +105,9 @@ const handleDelectToWishlist = async (propertyId: string ) => {
     }
 
     const response = await axios.post(
-      `${BaseUrl}/api/user/wishlist/delete`,
+      `/api/user/wishlist/delete`,
       { propertyId },
-      {
-        headers: {
-          Authorization: `Bearer ${getCookieValue()}`,
-          "Content-Type": "application/json",
-        },
-      }
+      
     );
 
     console.log(response.data.message);

@@ -87,12 +87,7 @@ export default function PartnerOnboarding() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${BASEURL}/api/refer/referInDB`, formData, {
-        headers: {
-          "Authorization": `Bearer ${getCookieValue()}`,
-          "Content-Type": "application/json",
-        }
-      });
+      await axios.post(`/api/user/referPro/createRefer`, formData);
       alert("✅ Customer Lead Added Successfully!");
       setFormData({
         customerName: "",
@@ -118,12 +113,7 @@ export default function PartnerOnboarding() {
     const fetchPropertyNames = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get(`${BASEURL}/api/refer/getPropertyName`, {
-          headers: {
-            "Authorization": `Bearer ${getCookieValue()}`,
-            "Content-Type": "application/json",
-          }
-        });
+        const res = await axios.get(`/api/user/referPro/getPropertyName`);
         
         const property = res.data.Property_name.map(data => data.property_name);
         setPropertyNames(property);
@@ -143,7 +133,7 @@ export default function PartnerOnboarding() {
   const fetchCustomerLeads = async () => {
     try {
       setLeadsLoading(true);
-      const res = await axios.get(`${BASEURL}/api/refer/geztAllApprovedLead`, {
+      const res = await axios.get(`${BASEURL}/api/refer/getAllApprovedLead`, {
         headers: {
           "Authorization": `Bearer ${getCookieValue()}`,
           "Content-Type": "application/json",

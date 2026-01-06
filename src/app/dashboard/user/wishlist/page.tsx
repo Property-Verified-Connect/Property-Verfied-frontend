@@ -49,12 +49,7 @@ const Page = () => {
     const fetchProperties = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${BASE_URL}/api/user/wishlist/see`, {
-          headers: {
-            "Authorization": `Bearer ${getCookieValue()}`,
-            "Content-Type": "application/json",
-          }
-        });
+        const response = await axios.get(`/api/user/wishlist/see`);
         const fetchedProperties =
           (response.data.properties || []).map(
             (item: any) => item.property_id

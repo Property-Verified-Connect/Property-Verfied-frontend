@@ -66,18 +66,11 @@ export default function LoginInForm() {
     if (Object.keys(newErrors).length === 0) {
       try {
         const res = await axios.post(
-          `${BASEURL}/api/auth/login`,
+          `/api/auth/login`,
           {
             email: formData.email,
             password: formData.password,
             role: formData.role,
-          },
-          {
-            withCredentials: true,
-
-            headers: {
-              "Content-Type": "application/json",
-            },
           }
         );
 
