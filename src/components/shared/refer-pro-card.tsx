@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import StatusTimeline from "./statusline";
+import toast from "react-hot-toast";
  // optional but good for feedback
 
 function ReferCard({ lead }) {
@@ -48,12 +49,12 @@ function ReferCard({ lead }) {
       setLoading(true);
     //   const response = await axios.post(`${BASEURL}/api/refer/setCustomerleadtoApproval`, { id }); // change API path if needed
         openWhatsApp(lead.contact_number) 
-    alert("Lead approved successfully!");
+    toast.success("Lead approved successfully!");
     //   console.log("Response:", response.data);
       window.location.reload()
     } catch (error) {
       console.error("Error approving lead:", error);
-      alert("Failed to approve lead");
+      toast.error("Failed to approve lead");
     } finally {
       setLoading(false);
     }

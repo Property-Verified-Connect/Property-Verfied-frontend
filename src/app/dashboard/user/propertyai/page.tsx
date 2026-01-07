@@ -28,6 +28,7 @@ import RentResultComponent from "@/components/layout/AI-Layout/RentResultCompone
 import axios from "axios";
 import { getCookieValue } from "@/function/cookies";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const BaseURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -250,7 +251,7 @@ export default function AIAssistantChat() {
       }
     } catch (error) {
       console.error("API Error:", error);
-      alert("Gemini Too many request try again later");
+      toast.error("Gemini Too many request try again later");
 
       router.push("/dashboard/user");
 

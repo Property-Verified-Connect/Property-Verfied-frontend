@@ -10,6 +10,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -81,19 +82,20 @@ export default function LoginInForm() {
           secure: true, // only over HTTPS
           sameSite: "strict",
         });
-
-        alert(res.data.message);
+          
+        toast.success(res.data.message)
+        // alert(res.data.message);
         router.push("/dashboard/user");
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           // AxiosError: may have response.data.error
-          alert(err.response?.data?.error ?? err.message);
+         toast.error(err.response?.data?.error ?? err.message);
           setloading(false);
         } else if (err instanceof Error) {
-          alert(err.message);
+          toast.error(err.message);
           setloading(false);
         } else {
-          alert(String(err));
+          toast.error(String(err));
           setloading(false);
         }
       }

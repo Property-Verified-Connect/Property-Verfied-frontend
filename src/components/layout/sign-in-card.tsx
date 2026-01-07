@@ -11,6 +11,7 @@ import Link from "next/link";
 import axios from 'axios';
 import { useRouter } from "next/navigation";
 import { INDIAN_CITIES } from "@/function/cities";
+import toast from "react-hot-toast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -89,16 +90,16 @@ export default function SignInForm(): JSX.Element {
           
         );
 
-        alert(res.data.message);
+        toast.success(res.data.message);
       } catch (err: unknown) {
         if (axios.isAxiosError(err) && err.response) {
           // attempt to read server error message
           const serverMsg = (err.response.data as { error?: string })?.error ?? err.message;
-          alert(serverMsg);
+          toast.error(serverMsg);
           router.push("/auth/login")
 
         } else {
-          alert(String(err));
+          toast.error(String(err));
         }
       }
       // Reset form if needed

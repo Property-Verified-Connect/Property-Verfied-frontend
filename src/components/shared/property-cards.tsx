@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog"
 import { getCookieValue } from '@/function/cookies'
 import axios from 'axios'
+import toast from 'react-hot-toast'
 
 // Define the types for the property and its nested objects
 interface Property {
@@ -69,7 +70,7 @@ const handleAddToWishlist = async (propertyId: string ) => {
 
     console.log(response.data.message);
     
-    alert(response.data.message);
+    toast.success(response.data.message);
     router.push("/dashboard/user/wishlist")
 
   } catch (error: any) {
@@ -80,20 +81,20 @@ const handleAddToWishlist = async (propertyId: string ) => {
         const message =
           error.response.data?.message || "Something went wrong";
         console.error("API Error:", message);
-        alert(message);
+        toast.error(message);
       } else if (error.request) {
         // Request made but no response
         console.error("No response from server");
-        alert("Server not responding. Please try again later.");
+        toast.error("Server not responding. Please try again later.");
       } else {
         // Axios setup error
         console.error("Axios Error:", error.message);
-        alert("Request failed. Please try again.");
+        toast.error("Request failed. Please try again.");
       }
     } else {
       // Non-Axios error
       console.error("Unexpected Error:", error);
-      alert("Unexpected error occurred.");
+      toast.error("Unexpected error occurred.");
     }
   }
 };
@@ -112,7 +113,7 @@ const handleDelectToWishlist = async (propertyId: string ) => {
 
     console.log(response.data.message);
     
-    alert(response.data.message);
+    toast.success(response.data.message);
    window.location.reload();
 
   } catch (error: any) {
@@ -123,20 +124,20 @@ const handleDelectToWishlist = async (propertyId: string ) => {
         const message =
           error.response.data?.message || "Something went wrong";
         console.error("API Error:", message);
-        alert(message);
+        toast.error(message);
       } else if (error.request) {
         // Request made but no response
         console.error("No response from server");
-        alert("Server not responding. Please try again later.");
+      toast.error("Server not responding. Please try again later.");
       } else {
         // Axios setup error
         console.error("Axios Error:", error.message);
-        alert("Request failed. Please try again.");
+      toast.error("Request failed. Please try again.");
       }
     } else {
       // Non-Axios error
       console.error("Unexpected Error:", error);
-      alert("Unexpected error occurred.");
+      toast.error("Unexpected error occurred.");
     }
   }
 };

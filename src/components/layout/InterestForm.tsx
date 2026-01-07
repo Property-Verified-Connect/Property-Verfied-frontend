@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { getCookieValue } from '@/function/cookies';
 import inter from '@/lib/font/Inter';
+import toast from 'react-hot-toast';
 
 
 function InterestForm() {
@@ -56,13 +57,13 @@ function InterestForm() {
       window.location.reload();
 
       if (response.ok) {
-        alert('Form submitted successfully!');
+        toast.success('Form submitted successfully!');
       } else {
-        alert('Failed to submit form');
+        toast.error('Failed to submit form');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Error submitting form');
+      toast.error('Error submitting form');
     } finally {
       setIsSubmitting(false);
     }

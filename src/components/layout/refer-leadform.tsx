@@ -21,6 +21,7 @@ import inter from "@/lib/font/Inter";
 import { getCookieValue } from "@/function/cookies";
 import { Skeleton } from "../ui/skeleton";
 import ReferCard from "../shared/refer-pro-card";
+import toast from "react-hot-toast";
 
 export default function PartnerOnboarding() {
   const [accepted, setAccepted] = useState(false);
@@ -88,7 +89,7 @@ export default function PartnerOnboarding() {
     e.preventDefault();
     try {
       await axios.post(`/api/user/referPro/createRefer`, formData);
-      alert("✅ Customer Lead Added Successfully!");
+      toast.success("✅ Customer Lead Added Successfully!");
       setFormData({
         customerName: "",
         contactNumber: "",
@@ -104,7 +105,7 @@ export default function PartnerOnboarding() {
       }
     } catch (err) {
       console.error(err);
-      alert("❌ Error adding customer lead!");
+      toast.error("❌ Error adding customer lead!");
     }
   };
 
@@ -120,7 +121,7 @@ export default function PartnerOnboarding() {
         
       } catch (error) {
         console.error("Error fetching property names:", error);
-        alert("Failed to load property names");
+        toast.error("Failed to load property names");
       } finally {
         setIsLoading(false);
       }

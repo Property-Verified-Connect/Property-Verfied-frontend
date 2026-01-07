@@ -42,6 +42,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { useParams } from "next/navigation";
 import { getCookieValue } from "@/function/cookies";
 import PropertyDetailsPage from "@/components/layout/propertyDetailCard";
+import toast from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -223,7 +224,8 @@ const isValidTimeSlot = (time: string): boolean => {
 
       setIsBooking(false);
       setShowBookingDialog(false);
-      alert("✅ Visit booked successfully!");
+      toast.success("Visit booked successfully!")
+      
       router.push("/dashboard/user");
     } catch (error) {
       setIsBooking(false);
@@ -233,7 +235,7 @@ const isValidTimeSlot = (time: string): boolean => {
         axiosError.response?.data?.error ||
         axiosError.message ||
         "Failed to book visit";
-      alert(`❌ ${errorMessage}`);
+      toast.error(`❌ ${errorMessage}`);
     }
   };
 
