@@ -11,6 +11,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,6 +41,7 @@ export default function LoginInForm() {
   });
 
   const [loading, setloading] = useState<boolean>(false);
+   const [showPassword, setShowPassword] = useState(false);
 
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -147,14 +149,14 @@ export default function LoginInForm() {
         </div>
 
         {/* Password */}
-        <div>
+        <div className=" relative">
           <Label htmlFor="password" className="mb-2 text-[#247FBA]">
             Password
           </Label>
           <Input
             id="password"
             name="password"
-            type="password"
+             type={showPassword ? "text" : "password"}
             placeholder="Enter password"
             value={formData.password}
             onChange={handleChange}
@@ -162,6 +164,13 @@ export default function LoginInForm() {
           {errors.password && (
             <p className="text-red-500 text-sm">{errors.password}</p>
           )}
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 bottom-2  text-gray-600 hover:text-[#247FBA]"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
         </div>
 
         <div className="w-full h-5 flex items-center justify-between">

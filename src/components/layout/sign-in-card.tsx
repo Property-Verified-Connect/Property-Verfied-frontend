@@ -12,6 +12,7 @@ import axios from 'axios';
 import { useRouter } from "next/navigation";
 import { INDIAN_CITIES } from "@/function/cities";
 import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,6 +50,8 @@ export default function SignInForm(): JSX.Element {
 
   const [errors, setErrors] = useState<Errors>({});
   const BASEURL = process.env.NEXT_PUBLIC_API_URL
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfrom, setShowPasswordConfrom] = useState(false);
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -192,32 +195,46 @@ export default function SignInForm(): JSX.Element {
        
 
         {/* Password */}
-        <div>
+        <div className=" relative">
           <Label htmlFor="password" className="mb-2 text-[#247FBA]">Password</Label>
           <Input
             id="password"
             name="password"
-            type="password"
+            type={showPasswordConfrom ? "text" : "password"}
             placeholder="Enter password"
             value={formData.password}
             onChange={handleChange}
           />
           {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+           <button
+              type="button"
+              onClick={() => setShowPasswordConfrom(!showPasswordConfrom)}
+              className="absolute right-2 bottom-2  text-gray-600 hover:text-[#247FBA]"
+            >
+              {showPasswordConfrom ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
         </div>
 
         {/* Re-enter Password */}
-        <div>
+        <div className=" relative">
           <Label htmlFor="confirmPassword" className="mb-2 text-[#247FBA]">Re-enter Password</Label>
           <Input
             id="confirmPassword"
             name="confirmPassword"
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Re-enter password"
             value={formData.confirmPassword}
             onChange={handleChange}
           />
           {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
-        </div>
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 bottom-2  text-gray-600 hover:text-[#247FBA]"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+         </div>
 
         {/* Terms & Conditions */}
         <div className="flex items-center space-x-2">
