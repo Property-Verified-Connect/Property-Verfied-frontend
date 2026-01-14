@@ -86,7 +86,7 @@ const DiscussResultComponent = ({
   
 }) => 
 {
-  const typedText = useTypingEffect(predictions.answer, 15);
+  const typedText = useTypingEffect(predictions, 15);
 
  return (
   <div className="bg-white rounded-2xl p-4 shadow-lg max-w-md">

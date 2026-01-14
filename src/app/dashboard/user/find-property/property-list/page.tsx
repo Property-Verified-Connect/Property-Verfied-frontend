@@ -79,6 +79,7 @@ const Page = () => {
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [locationFilter, setLocationFilter] = useState<string>("");
+  const [areaFilter, setAreaFilter] = useState<string>("");
   const [availabilityStatus, setAvailabilityStatus] = useState<string>("all");
   const [ownership, setOwnership] = useState<string>("all");
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
@@ -137,6 +138,13 @@ const Page = () => {
     if (locationFilter.trim()) {
       filters.push({ key: 'location', label: 'City', value: locationFilter });
     }
+
+     
+
+ if (areaFilter.trim()) {
+      filters.push({ key: 'area', label: 'Area', value: areaFilter });
+    }
+
     if (availabilityStatus !== "all") {
       filters.push({ key: 'availability', label: 'Status', value: availabilityStatus });
     }
@@ -145,7 +153,7 @@ const Page = () => {
     }
 
     setActiveFilters(filters);
-  }, [searchQuery, propertyType, configuration, bedrooms, bathrooms, balconies, minPrice, maxPrice, locationFilter, availabilityStatus, ownership]);
+  }, [searchQuery, propertyType, configuration,bedrooms, areaFilter ,bathrooms, balconies, minPrice, maxPrice, locationFilter, availabilityStatus, ownership]);
 
   // Apply filters whenever search query or filters change
   useEffect(() => {
@@ -211,6 +219,12 @@ const Page = () => {
       );
     }
 
+   if (areaFilter.trim()) {
+  filtered = filtered.filter(property =>
+    property?.location?.toLowerCase().includes(areaFilter.toLowerCase())
+  );
+}
+
     // Availability status filter
     if (availabilityStatus !== "all") {
       filtered = filtered.filter(property =>
@@ -226,7 +240,7 @@ const Page = () => {
     }
 
     setFilteredProperties(filtered);
-  }, [searchQuery, propertyType, configuration, bedrooms, bathrooms, balconies, minPrice, maxPrice, locationFilter, availabilityStatus, ownership, properties]);
+  }, [searchQuery, propertyType, configuration, areaFilter,bedrooms, bathrooms, balconies, minPrice, maxPrice, locationFilter, availabilityStatus, ownership, properties]);
 
   const handleReset = () => {
     setSearchQuery("");
@@ -238,6 +252,7 @@ const Page = () => {
     setMinPrice("");
     setMaxPrice("");
     setLocationFilter("");
+    setAreaFilter("")
     setAvailabilityStatus("all");
     setOwnership("all");
     setFilteredProperties(properties);
@@ -270,6 +285,9 @@ const Page = () => {
       case 'location':
         setLocationFilter("");
         break;
+           case 'area':
+        setAreaFilter("");
+        break;
       case 'availability':
         setAvailabilityStatus("all");
         break;
@@ -284,7 +302,7 @@ const Page = () => {
       <Nav />
       <div className="bg-prv min-h-screen w-full overflow-hidden flex flex-col items-center pt-15 pb-20">
         {/* Search Bar */}
-        <div className="flex items-center justify-center gap-1 md:gap-3">
+        <div className="flex items-cente w-95 lg:w-[40rem] justify-center gap-1 md:gap-3">
           <Link href={"/dashboard/user"}>
             <Button variant="outline" className="mb-2 rounded-full">
               <ArrowLeft />
@@ -304,8 +322,10 @@ const Page = () => {
         </div>
 
         {/* Title */}
-        <div className="py-2 px-5 md:-ml-20 flex items-start w-96">
-          <h1 className={`${inter.className} font-bold text-gray-600 text-2xl flex items-center justify-center`}>
+        <div className="w-96 lg:w-[35rem] flex flex-col items-center justify-between   ">
+
+        <div className="py-2 px-5 md:-ml-20 flex items-start w-96 lg:w-[35rem] ">
+          <h1 className={`${inter.className} font-bold text-gray-600 text-2xl lg:text-3xl flex items-center justify-center`}>
            Property List <ChevronRight />
           </h1>
         </div>
@@ -314,9 +334,9 @@ const Page = () => {
     
 
         {/* Filters */}
-        <div className="flex w-11/12 max-w-md justify-between gap-3 items-center mb-4">
+        <div className="flex w-11/12 lg:w-[35rem]  justify-between gap-6 items-center mb-4">
          
-         <div className="flex gap-1">
+         <div className="flex gap-1 lg:mr-10">
 
          <Sheet>
       <SheetTrigger asChild>
@@ -344,6 +364,19 @@ const Page = () => {
               placeholder="Enter location..."
               value={locationFilter}
               onChange={(e) => setLocationFilter(e.target.value)}
+              className="w-full text-sm bg-white shadow rounded-full"
+            />
+          </div>
+
+            <div>
+            <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
+              <MapPin size={16}/>Area <ChevronRight size={18}/>
+            </Label>
+            <Input
+              type="text"
+              placeholder="Enter area (Ex: Manish Nagar)"
+              value={areaFilter}
+              onChange={(e) => setAreaFilter(e.target.value)}
               className="w-full text-sm bg-white shadow rounded-full"
             />
           </div>
@@ -562,6 +595,7 @@ const Page = () => {
             </Select>
           </div>
         </div>
+        </div>
         
         {activeFilters.length > 0 && (
           <motion.div 
@@ -601,7 +635,7 @@ const Page = () => {
         )}
         
         {/* Property Cards */}
-        <div className='h-full w-96 px-5 flex mt-2 flex-col gap-2'>
+        <div className='h-full w-96 lg:w-[45rem] px-5 flex mt-2 flex-col gap-2'>
           {isLoading ? (
             // Loading state
             <div className='flex flex-col gap-1'>

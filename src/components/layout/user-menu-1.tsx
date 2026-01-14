@@ -88,7 +88,7 @@ export default function PropertyDashboard() {
       <div className="flex flex-col w-full md:items-center md:justify-center overflow-y-auto px-4 py-3 ">
     {/* <h1 className={`text-2xl ${inter.className} font-bold text-gray-600 flex items-center`}>User Dashboard <ChevronRightIcon/></h1> */}
         {/* City Selector */}
-       <div className="mb-4">
+       <div className="mb-4 lg:-mt-4 lg:-mb-10">
           <label className="text-sm font-medium mb-1 block">Select City</label>
           <Select value={selectedCity} onValueChange={setSelectedCity}>
             <SelectTrigger className="bg-white w-full md:w-[30rem]">
@@ -104,7 +104,7 @@ export default function PropertyDashboard() {
         </div>
 
         {/* Property Image */}
-        <div className="rounded-2xl w-full h-80 overflow-hidden md:h-96 md:w-[40rem] flex items-center justify-center mb-4">
+        <div className="rounded-2xl w-full h-80 overflow-hidden md:h-[32rem] lg:scale-75 md:w-[75rem] flex items-center justify-center mb-4">
           {/* <Image
             src="/image/image-2.jpg"
             alt="Property"
@@ -117,7 +117,7 @@ export default function PropertyDashboard() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-2 gap-4 lg:-mt-10">
           <Link href={"/dashboard/user/propertyai"} >
           <FeatureCard icon={"spark"} label="AI Match Property" />
           </Link>
@@ -144,7 +144,7 @@ export default function PropertyDashboard() {
 
 function FeatureCard({ icon, label }:prop) {
   return (
-    <div className="flex md:w-80 sm:scale-100   flex-col items-center justify-center bg-white rounded-2xl shadow-md py-6 hover:scale-105 transition-transform">
+    <div className="flex md:w-80 sm:scale-100 lg:h-30   flex-col items-center justify-center bg-white rounded-2xl shadow-md py-6 hover:scale-105 transition-transform">
     <img className="h-10 scale-120" src={`/image/${icon}.png`} alt="" />
       <p className="text-sm font-medium mt-2 text-center">{label}</p>
       {icon == "safe" ? <p className="text-xs text-gray-400" >coming soon</p>:"" }

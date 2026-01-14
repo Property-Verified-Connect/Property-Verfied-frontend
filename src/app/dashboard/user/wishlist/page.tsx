@@ -179,7 +179,7 @@ const Page = () => {
         </div>
 
         {/* Property Cards */}
-        <div className='h-full w-96 px-5 flex mt-2 flex-col gap-2'>
+        <div className='h-full w-96 lg:w-[40rem] px-5 flex mt-2 flex-col gap-2'>
           {isLoading ? (
             // Loading state
             <div className='flex flex-col gap-1'>

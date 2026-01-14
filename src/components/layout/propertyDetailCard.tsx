@@ -180,6 +180,7 @@ function PropertyDetailsPage({
               <SliderImage
                 Image={propertyDetails.photos}
                 setImageLoaded={setImageLoaded}
+                height={"auto"}
               />
               <div className="absolute top-3 z-99 left-3 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full shadow-md">
                 <span className="text-[#007BFF] font-bold text-sm">

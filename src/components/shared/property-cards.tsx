@@ -155,7 +155,7 @@ const handleDelectToWishlist = async (propertyId: string ) => {
           <img
             src={property?.photos[0] ||  ""}
             alt={property.property_name}
-            className="w-24 h-24 rounded-lg object-cover"
+            className="w-24 h-24 lg:w-45 lg:h-45 rounded-lg object-cover"
           />
           <span className={`absolute capitalize top-1 right-1 text-[10px] font-semibold px-2 py-0.5 rounded-full ${getStatusColor(property.status)}`}>
             {property.status}
@@ -168,12 +168,12 @@ const handleDelectToWishlist = async (propertyId: string ) => {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between mb-1">
             <div className="flex-1 min-w-0">
-              <h3 className={`${inter.className} font-semibold text-gray-900 text-sm truncate`}>
+              <h3 className={`${inter.className} lg:text-2xl font-semibold text-gray-700 text-sm truncate`}>
                 {property.property_name }
               </h3>
               <p className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
                 <MapPin size={12} />
-                <span className="truncate capitalize flex  items-center justify-center ">{property.city} <ChevronRight size={12} className='mt-0.5'/> {property.location}</span>
+                <span className="truncate lg:text-sm capitalize flex  items-center justify-center ">{property.city} <ChevronRight size={12} className='mt-0.5'/> {property.location}</span>
               </p>
             </div>
 
@@ -242,23 +242,30 @@ const handleDelectToWishlist = async (propertyId: string ) => {
           </div>
 
           <div className="flex items-center gap-2 mt-2">
-            <span className="bg-blue-50 text-blue-700 text-xs flex items-center gap-1 font-medium px-2 py-1 rounded">
+            <span className="bg-blue-50 lg:text-lg text-blue-700 text-xs flex items-center gap-1 font-medium px-2 py-1 rounded">
               
                {property.property_type == "Independent House / Villa" ? <House size={12}/>:property.property_type == "Plot / Land" ?  <Grid2X2 size={12}/> :    <Building size={12}/>}
               {property.property_type == "Independent House / Villa" ?"House / Villa":property.property_type}
             </span>
-            <span className="bg-gray-100 text-gray-700 text-xs font-semibold px-2 py-1 rounded">
+            <span className="bg-gray-100 lg:text-lg text-gray-700 text-xs font-semibold px-2 py-1 rounded">
               ₹{property.price.toLocaleString('en-IN')}
             </span>
           </div>
             <div className="flex items-center-center gap-2">
-          <span className="bg-gray-100 text-gray-700 mt-1 text-xs font-semibold px-2 py-1 rounded">
+          <span className="bg-gray-100 lg:text-lg text-gray-700 mt-1 text-xs font-semibold px-2 py-1 rounded">
               {property.looking_for}
             </span>
         </div>
+        
+         <div className="hidden items-center  lg:block md:hidden h-auto   gap-2">
+  <span className="bg-gray-100 text-gray-700 mt-1 text-xs font-semibold px-2 py-1 rounded line-clamp-2">
+    {property.description}
+  </span>
+</div>
+        
         </div>
       </div>
- <div className="flex items-center h-auto   gap-2">
+ <div className="flex items-center  lg:hidden h-auto   gap-2">
   <span className="bg-gray-100 text-gray-700 mt-1 text-xs font-semibold px-2 py-1 rounded line-clamp-2">
     {property.description}
   </span>
