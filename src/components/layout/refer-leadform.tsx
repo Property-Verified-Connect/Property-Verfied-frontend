@@ -22,6 +22,22 @@ import { getCookieValue } from "@/function/cookies";
 import { Skeleton } from "../ui/skeleton";
 import ReferCard from "../shared/refer-pro-card";
 import toast from "react-hot-toast";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 
 export default function PartnerOnboarding() {
   const [accepted, setAccepted] = useState(false);
@@ -31,9 +47,11 @@ export default function PartnerOnboarding() {
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState("add-lead");
   
+  
   // ✅ Fixed: Proper state for customer leads
   const [customerLeads, setCustomerLeads] = useState([]);
   const [leadsLoading, setLeadsLoading] = useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const tabs = [
     { id: "add-lead", label: "Add Lead" },
@@ -117,6 +135,7 @@ export default function PartnerOnboarding() {
         const res = await axios.get(`/api/user/referPro/getPropertyName`);
         
         const property = res.data.Property_name.map(data => data.property_name);
+        property.unshift("Other");
         setPropertyNames(property);
         
       } catch (error) {
@@ -245,22 +264,51 @@ export default function PartnerOnboarding() {
 
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="projectName" className="mb-2 w-full">Project Name</Label>
-                  <Select onValueChange={handleProjectChange} value={formData.projectName}>
-                    <SelectTrigger id="projectName" className="w-full">
-                      <SelectValue placeholder="Select a Project" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {propertyNames.map((project, idx) => (
-                        <SelectItem key={idx} value={project}>
-                          {project}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
+            <div>
+  <Label htmlFor="projectName" className="mb-2 w-full">Project Name</Label>
+  <Popover open={open} onOpenChange={setOpen}>
+    <PopoverTrigger asChild>
+      <Button
+        id="projectName"
+        variant="outline"
+        role="combobox"
+        aria-expanded={open}
+        className="w-full justify-between"
+      >
+        {formData.projectName || "Select a Project"}
+        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent className="w-full p-0">
+      <Command>
+        <CommandInput placeholder="Search project..." />
+        <CommandList>
+          <CommandEmpty>No project found.</CommandEmpty>
+          <CommandGroup>
+            {propertyNames.map((project, idx) => (
+              <CommandItem
+                key={idx}
+                value={project}
+                onSelect={() => {
+                  handleProjectChange(project);
+                  setOpen(false);
+                }}
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    formData.projectName === project ? "opacity-100" : "opacity-0"
+                  )}
+                />
+                {project}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </PopoverContent>
+  </Popover>
+</div>
                 <div>
                   <Label htmlFor="customerName" className="mb-2">Customer Name</Label>
                   <Input

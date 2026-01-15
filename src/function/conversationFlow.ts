@@ -118,7 +118,12 @@ const conversationFlows = {
 },
 {
   question: "What is your religion? (Only for searching purposes)",
-  options: [" Hindu", "Muslim", "Sikh", "Christian", " Jain / Buddhist", " Other belief / mixed background", "Prefer not to say"],
+  options: ["Hindu", "Muslim", "Sikh", "Christian", "Jain / Buddhist", "Other belief / mixed background", "Prefer not to say"],
+  allowText: true
+},
+{
+  question: "What is Your Gender ?",
+  options: ["Girl" ,"Boys"],
   allowText: true
 }
 

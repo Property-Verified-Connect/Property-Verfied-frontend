@@ -394,12 +394,14 @@ export default function AIAssistantChat() {
                 </div>
               ) : (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={`px-4 py-2 rounded-2xl text-sm max-w-[75%] whitespace-pre-line ${
+                  initial={{ opacity: 0 ,y:4 }}
+                  animate={{ opacity: 1 , y:0}}
+                  transition={{duration:0.5}}
+                
+                  className={`px-4 py-2 rounded-2xl  text-sm max-w-[75%] whitespace-pre-line ${
                     msg.sender === "bot"
-                      ? "bg-[#2588e3] text-white ml-2"
-                      : "bg-white text-black mr-2"
+                      ? "bg-[#2588e3] text-white ml-2 border-gray-100 border-b-7 border-l-5"
+                      : "bg-white text-black mr-2 border-sky-300 border-b-5 border-l-5"
                   }`}
                 >
                   {msg.text}
@@ -423,18 +425,22 @@ export default function AIAssistantChat() {
                 </div>
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                    transition={{delay:0.7}}
+                  
                   className="ml-2 flex flex-wrap gap-2 max-w-[75%]"
                 >
                   {currentOptions.map((option, idx) => (
-                    <button
+                    <motion.button
+               
                       key={idx}
+                       
                       onClick={() => handleOptionSelect(option)}
-                      className="px-4 py-2 bg-white text-[#007acc] border-2 border-[#007acc] rounded-full text-sm font-medium hover:bg-[#007acc] hover:text-white transition-all shadow-sm hover:shadow-md animate-slideUp"
+                      className="px-4 border-sky-400 border-b-5 border-l-5 py-2 bg-white text-[#007acc]  rounded-2xl text-sm font-medium hover:bg-[#007acc] hover:text-white transition-all shadow-sm hover:shadow-md animate-slideUp"
                       style={{ animationDelay: `${idx * 0.05}s` }}
                     >
                       {option}
-                    </button>
+                    </motion.button>
                   ))}
                 </motion.div>
               </div>
@@ -472,8 +478,20 @@ export default function AIAssistantChat() {
         {messages.length === 0 && (
           <div className="w-full h-full flex flex-col items-center justify-center p-4">
             <h1 className="font-bold text-3xl md:text-4xl mb-8 text-center">
-              What can I help with?
-            </h1>
+  {"What can I help with?".split("").map((char, idx) => (
+    <motion.span
+      key={idx}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{
+        delay: idx * 0.05,
+        duration: 0.1
+      }}
+    >
+      {char}
+    </motion.span>
+  ))}
+</h1>
             <div className="md:w-[26rem] w-full gap-2 flex flex-wrap items-center justify-center">
               {assistantOptions.map((option) => {
                 const Icon = option.icon;
