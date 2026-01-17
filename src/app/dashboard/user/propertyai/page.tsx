@@ -16,6 +16,8 @@ import {
   TrendingUp,
   Users,
   Star,
+  Circle,
+  Lightbulb,
 } from "lucide-react";
 import inter from "@/lib/font/Inter";
 import { motion } from "framer-motion";
@@ -86,7 +88,7 @@ const DiscussResultComponent = ({
   
 }) => 
 {
-  const typedText = useTypingEffect(predictions, 15);
+  const typedText = useTypingEffect(predictions?.SHORT_ANSWER, 15);
 
  return (
   <div className="bg-white rounded-2xl p-4 shadow-lg max-w-md">
@@ -96,10 +98,32 @@ const DiscussResultComponent = ({
       </div>
       <h3 className="font-bold text-lg">AI Discussion</h3>
     </div>
+    <div >
+
+          {predictions?.SHORT_ANSWER}
+         <br />
+         <br />
+         <hr />
+          <br />
+       <div className="flex items-center gap-2 mb-4">
+          <div className="bg-amber-100 p-2 rounded-lg">
+            <Lightbulb className="text-amber-600" size={20} />
+          </div>
+          <h2 className="font-bold text-gray-800 text-base">Key Points</h2>
+        </div>
+          {predictions?.KEY_POINTS.map(val => <div key={val} className="flex items-start justify-start gap-2" ><Circle size={8} fill="black" className="mt-2"/> {val} <br /></div>   )}
+          <br />
+            <hr />
+            <br />
+                   <div className="flex items-center gap-2 mb-4">
+          <div className="bg-green-100 p-2 rounded-lg">
+             <MapPin className="text-green-600" size={20} />
+          </div>
+          <h2 className="font-bold text-gray-800 text-base">Recommended Properties</h2>
+        </div>
+    {predictions?.RECOMMENDED_PROPERTIES.map(val => <div key={val} className="flex items-start justify-start gap-2" ><Circle size={8} fill="black" className="mt-2"/> {val} <br /></div>   )}
     
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-     {typedText}
-    </ReactMarkdown>
+    </div>
 
 
 
@@ -229,7 +253,7 @@ export default function AIAssistantChat() {
       const predictions = response.data.cleanResponse || {};
       const BudgetProperties = response.data.BudgetProperties || {};
       const CategoryProperties = response.data.CategoryProperties || {};
-
+      // const Disscusion  = response.data.
       //  if (!predictions) {
       //   throw new Error("No predictions received from API");
       // }
@@ -246,6 +270,7 @@ export default function AIAssistantChat() {
         { sender: "component", component: resultComponent },
       ]);
       if (mode === "discuss") {
+        setCurrentOptions(predictions?.SUGGESTIONS || [])
         setAllowTextInput(true);
         setShowOptions(true);
       }
