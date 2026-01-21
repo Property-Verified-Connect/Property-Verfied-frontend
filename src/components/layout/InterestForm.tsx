@@ -131,7 +131,7 @@ function InterestForm() {
                 <div className="space-y-3">
                   <Label className="text-md font-medium">What's your monthly income?</Label>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {["₹50,000-75,000", "₹75,000-1,00,000", "₹1,00,000-1,50,000", "₹1,50,000+"].map((option) => (
+                    {[ "₹10,000 - 20,000", "₹20,000 - 50,000 " ,"₹50,000-75,000", "₹75,000-1,00,000", "₹1,00,000-1,50,000", "₹1,50,000+"].map((option) => (
                       <Button
                         key={option}
                         variant={formData.income === option ? "selectdashed" : "select"}

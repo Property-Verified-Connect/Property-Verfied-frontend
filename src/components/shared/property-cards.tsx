@@ -5,7 +5,7 @@ import inter from '@/lib/font/Inter'
 import { motion } from "framer-motion" 
 import Link from 'next/link'
 import { Skeleton } from '../ui/skeleton'
-import SliderImage from './sliderImage'
+import SliderImage from './SliderImage'
 import { useRouter } from 'next/navigation'
 import {
   Dialog,
@@ -150,13 +150,18 @@ const handleDelectToWishlist = async (propertyId: string ) => {
       className="bg-white rounded-xl p-4 w-full shadow-sm hover:shadow-md transition-shadow border border-gray-100"
     >
       {/* Header with Image and Basic Info */}
-      <div className="flex gap-3 mb-3">
+      <div className="flex gap-3 mb-3 md:flex-row flex-col">
         <div className="relative">
           <img
             src={property?.photos[0] ||  ""}
             alt={property.property_name}
-            className="w-24 h-24 lg:w-45 lg:h-45 rounded-lg object-cover"
+            className="w-full h-60 lg:w-45 lg:h-45 md:block hidden rounded-lg object-cover"
           />
+          <div className='md:hidden block'>
+
+          <SliderImage Image={property?.photos}/>
+          </div>
+
           <span className={`absolute capitalize top-1 right-1 text-[10px] font-semibold px-2 py-0.5 rounded-full ${getStatusColor(property.status)}`}>
             {property.status}
           </span>
@@ -166,9 +171,9 @@ const handleDelectToWishlist = async (propertyId: string ) => {
 
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between mb-1">
+          <div className="flex  items-start justify-between mb-1">
             <div className="flex-1 min-w-0">
-              <h3 className={`${inter.className} lg:text-2xl font-semibold text-gray-700 text-sm truncate`}>
+              <h3 className={`${inter.className} lg:text-2xl text-2xl font-semibold text-gray-700  truncate`}>
                 {property.property_name }
               </h3>
               <p className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
@@ -242,17 +247,20 @@ const handleDelectToWishlist = async (propertyId: string ) => {
           </div>
 
           <div className="flex items-center gap-2 mt-2">
-            <span className="bg-blue-50 lg:text-lg text-blue-700 text-xs flex items-center gap-1 font-medium px-2 py-1 rounded">
+            <span className="bg-blue-50 lg:text-lg text-blue-700 text-sm flex items-center gap-1 font-medium px-2 py-1 rounded">
               
                {property.property_type == "Independent House / Villa" ? <House size={12}/>:property.property_type == "Plot / Land" ?  <Grid2X2 size={12}/> :    <Building size={12}/>}
               {property.property_type == "Independent House / Villa" ?"House / Villa":property.property_type}
             </span>
-            <span className="bg-gray-100 lg:text-lg text-gray-700 text-xs font-semibold px-2 py-1 rounded">
+            <span className="bg-gray-100 lg:text-lg text-gray-700 text-sm font-semibold px-2 py-1 rounded">
               ₹{property.price.toLocaleString('en-IN')}
             </span>
+               <span className="bg-gray-100  block md:hidden lg:text-lg text-gray-700  text-sm font-semibold px-2 py-1 rounded">
+              {property.looking_for}
+            </span>
           </div>
-            <div className="flex items-center-center gap-2">
-          <span className="bg-gray-100 lg:text-lg text-gray-700 mt-1 text-xs font-semibold px-2 py-1 rounded">
+            <div className="md:flex items-center-center gap-2  hidden ">
+          <span className="bg-gray-100 lg:text-lg text-gray-700 mt-1 text-sm font-semibold px-2 py-1 rounded">
               {property.looking_for}
             </span>
         </div>

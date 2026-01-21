@@ -12,7 +12,7 @@ import 'swiper/css/navigation';
 // import required modules
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
-export default function SliderImage({Image , setImageLoaded , height}) {
+export default function SliderImage({Image , setImageLoaded , height ,width}) {
   return (
     <>
       <Swiper
@@ -36,7 +36,7 @@ export default function SliderImage({Image , setImageLoaded , height}) {
                 <img
                 src={val}
                 onLoad={() => setImageLoaded(true)}
-                className={`w-full z-10 h-80 ${height == "auto" ? "" :"lg:h-[31rem]" }  object-cover rounded-2xl shadow-lg`}
+                className={` ${width == "auto" ? "w-90" :"w-full" }  z-10 h-80 ${height == "auto" ? "" :"lg:h-[31rem]" }  object-cover rounded-2xl shadow-lg`}
               />
             </SwiperSlide>
 
