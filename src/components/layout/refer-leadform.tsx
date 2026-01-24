@@ -37,6 +37,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import useRedirectByRole from "@/hooks/useRedirectByRole";
 
 
 export default function PartnerOnboarding() {
@@ -46,8 +47,9 @@ export default function PartnerOnboarding() {
   const [propertyNames, setPropertyNames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState("add-lead");
-  
-  
+  const {user} = useRedirectByRole()
+
+
   // ✅ Fixed: Proper state for customer leads
   const [customerLeads, setCustomerLeads] = useState([]);
   const [leadsLoading, setLeadsLoading] = useState(false);
@@ -87,7 +89,18 @@ export default function PartnerOnboarding() {
         }
     ]
 
-  const handleAccept = () => setAccepted(true);
+  const handleAccept = async() => {
+       const res = await axios.post(`${BASEURL}/api/refer/setTerms`, {},{
+        headers: {
+          "Authorization": `Bearer ${getCookieValue()}`,
+          "Content-Type": "application/json",
+        }
+      });    
+
+      localStorage.clear()
+
+      window.location.reload();
+  };
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -177,7 +190,7 @@ export default function PartnerOnboarding() {
     }
   }, [selected]);
 
-  if (!accepted) {
+  if (!user?.is_Term) {
     return (
       <motion.div
         className="flex justify-center items-start mt-10 min-h-screen"

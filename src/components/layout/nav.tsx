@@ -21,7 +21,7 @@ function Nav() {
         }
     }, []);
   return (
-    <div className='h-12 fixed top-0 md:gap-0 gap-40  z-99 w-full md:p-4 px-0 bg-white shadow flex items-center justify-between'>
+    <div className='h-12 fixed top-0 md:gap-0 gap-40  z-80 w-full md:p-4 px-0 bg-white shadow flex items-center justify-between'>
           <div className='h-10 w-50  scale-110 flex items-center justify-center'>
            
         <Image src={'/image/Logo.png'} height={120} width={100} alt='logo'/>

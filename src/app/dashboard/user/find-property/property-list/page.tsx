@@ -17,6 +17,7 @@ import axios from "axios";
 import PropertyCards from "@/components/shared/property-cards";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCookieValue } from "@/function/cookies";
+import { INDIAN_CITIES } from "@/function/cities";
 import {
   Sheet,
   SheetClose,
@@ -35,6 +36,22 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 
 interface Property {
   id: number;
@@ -84,6 +101,7 @@ const Page = () => {
   const [ownership, setOwnership] = useState<string>("all");
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -347,7 +365,7 @@ const Page = () => {
           <Filter/>
           </Button>
       </SheetTrigger>
-      <SheetContent side="left" className={`z-99 ${inter.className} overflow-y-auto`}>
+      <SheetContent side="left" className={`py-10 z-[99] ${inter.className} overflow-y-auto`}>
         <SheetHeader>
           <SheetTitle className="text-2xl font-bold text-zinc-600 py-4 flex items-center gap-1 ">  <Filter fill="gray" color="gray"/>Property Filter <ChevronRightIcon/></SheetTitle>
         </SheetHeader>
@@ -355,18 +373,53 @@ const Page = () => {
           
           {/* Property Type */}
              {/* Location */}
-          <div>
-            <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
-              <MapPin size={16}/>City <ChevronRight size={18}/>
-            </Label>
-            <Input
-              type="text"
-              placeholder="Enter location..."
-              value={locationFilter}
-              onChange={(e) => setLocationFilter(e.target.value)}
-              className="w-full text-sm bg-white shadow rounded-full"
-            />
-          </div>
+       <div>
+  <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
+    <MapPin size={16}/>City <ChevronRight size={18}/>
+  </Label>
+  <Popover open={open} onOpenChange={setOpen}>
+    <PopoverTrigger asChild>
+      <Button
+        variant="outline"
+        role="combobox"
+        aria-expanded={open}
+        className="w-full justify-between text-sm bg-white shadow rounded-full"
+      >
+        {locationFilter || "Search or select city..."}
+        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent className="w-full p-0 z-[100]">
+      <Command>
+        <CommandInput placeholder="Search city..." />
+        <CommandList>
+          <CommandEmpty>No city found.</CommandEmpty>
+          <CommandGroup>
+            {INDIAN_CITIES.map((city) => (
+              <CommandItem
+                key={city}
+                value={city}
+                onSelect={(currentValue) => {
+                  setLocationFilter(currentValue === locationFilter ? "" : currentValue);
+                  setOpen(false);
+                }}
+              
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    locationFilter === city ? "opacity-100" : "opacity-0"
+                  )}
+                />
+                {city}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </PopoverContent>
+  </Popover>
+</div>  
 
             <div>
             <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
