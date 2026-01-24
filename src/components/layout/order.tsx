@@ -10,7 +10,7 @@ import MiddlewareLoader from "../shared/middleware-loader";
 function Order() {
   const [Orders, setOrders] = useState([]);
   const [searchText, setSearchText] = useState("");
-
+  const [isLoading, setIsLoading] = useState(true);
   
   const [active, setActive] = useState<ActiveTab>("Home");
 
@@ -18,19 +18,20 @@ function Order() {
   useEffect(() => {
     const getOrder = async () => {
       try {
-        const response = await axios.get(`/api/user/getOrder`,);
+        setIsLoading(true);
+        const response = await axios.get(`/api/user/getOrder`);
 
-        setOrders(response.data.booking);
-        console.log(response)
+        setOrders(response.data.booking || []);
+        console.log(response);
       } catch (error) {
         console.error("something went wrong", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     getOrder();
-  }, []); // ❗ fixed dependency
-
-
+  }, []);
 
   // 👉 FILTER LOGIC
   const filteredOrders = Orders.filter((order) => {
@@ -67,7 +68,24 @@ function Order() {
 
         {/* Order List */}
         <div className="h-full w-full mt-3 gap-4 flex flex-col items-center justify-center">
-          {filteredOrders.length > 0 ? (
+          {isLoading ? (
+            // 🔄 Loading State
+            <>
+              <div className="w-full h-96 max-w-2xl bg-white border rounded-lg shadow-sm p-4 flex flex-col gap-4">
+                <Skeleton className="h-40 w-full" />
+                <Skeleton className="h-10 w-[60%]" />
+                <Skeleton className="h-10 w-[50%]" />
+                <Skeleton className="h-10 w-[40%]" />
+              </div>
+              <div className="w-full h-96 max-w-2xl bg-white border rounded-lg shadow-sm p-4 flex flex-col gap-4">
+                <Skeleton className="h-40 w-full" />
+                <Skeleton className="h-10 w-[60%]" />
+                <Skeleton className="h-10 w-[50%]" />
+                <Skeleton className="h-10 w-[40%]" />
+              </div>
+            </>
+          ) : filteredOrders.length > 0 ? (
+            // ✅ Orders Found
             filteredOrders.map((val, index) => (
               <OrderCard
                 key={index}
@@ -75,25 +93,28 @@ function Order() {
                 image="https://images.unsplash.com/photo-1560185127-6ed189bf02f4"
               />
             ))
+          ) : Orders.length === 0 ? (
+            // 📭 No Orders at All
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="text-6xl mb-4">📦</div>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                No Orders Yet
+              </h3>
+              <p className="text-sm text-gray-500 text-center max-w-md">
+                You haven't placed any orders yet. Start exploring properties to make your first booking!
+              </p>
+            </div>
           ) : (
-            <>
-            <div className="w-full h-96 max-w-2xl bg-white border rounded-lg shadow-sm p-4 flex flex-col gap-4 cursor-pointer hover:shadow-md transition">
-              
-              <Skeleton className="h-40 w-full"/>
-               <Skeleton className="h-10 w-[60%]"/>
-                <Skeleton className="h-10 w-[50%]"/>
-                 <Skeleton className="h-10 w-[40%]"/>
-
+            // 🔍 No Search Results
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="text-6xl mb-4">🔍</div>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                No Results Found
+              </h3>
+              <p className="text-sm text-gray-500 text-center max-w-md">
+                No orders match "{searchText}". Try a different search term.
+              </p>
             </div>
-             <div className="w-full h-70 max-w-2xl bg-white border rounded-lg shadow-sm p-4 flex flex-col gap-4 cursor-pointer hover:shadow-md transition">
-              
-              <Skeleton className="h-40 w-full"/>
-               <Skeleton className="h-10 w-[60%]"/>
-                <Skeleton className="h-10 w-[50%]"/>
-                 <Skeleton className="h-10 w-[40%]"/>
-
-            </div>
-            </>
           )}
         </div>
       </div>

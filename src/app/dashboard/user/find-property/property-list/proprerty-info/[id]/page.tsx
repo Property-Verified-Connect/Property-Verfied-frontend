@@ -273,7 +273,7 @@ const isValidTimeSlot = (time: string): boolean => {
                 <Book /> Book Visit
               </Button>
             </DialogTrigger>
-            <DialogContent className={`${inter.className} sm:max-w-md z-99 mt-5 bg-white rounded-xl`}>
+            <DialogContent className={`${inter.className} sm:max-w-md z-99  mt-5 bg-white rounded-xl`}>
               <DialogHeader>
                 <DialogTitle className="text-[#007BFF] font-bold">
                   Book a Property Visit
@@ -310,7 +310,7 @@ const isValidTimeSlot = (time: string): boolean => {
 
                 {/* Date Picker */}
                 <div>
-                  <Label className="font-semibold text-gray-700 mb-2 block">
+                  <Label className="font-semibold  text-gray-700 mb-2 block">
                     Select Date
                   </Label>
                   <Calendar
