@@ -320,7 +320,7 @@ const Page = () => {
       <Nav />
       <div className="bg-prv min-h-screen w-full overflow-hidden flex flex-col items-center pt-15 pb-20">
         {/* Search Bar */}
-        <div className="flex items-cente w-95 lg:w-[40rem] justify-center gap-1 md:gap-3">
+        <div className="flex items-cente w-full px-4 lg:w-[40rem] justify-center gap-1 md:gap-3">
           <Link href={"/dashboard/user"}>
             <Button variant="outline" className="mb-2 rounded-full">
               <ArrowLeft />
@@ -365,7 +365,7 @@ const Page = () => {
           <Filter/>
           </Button>
       </SheetTrigger>
-      <SheetContent side="left" className={`py-10 z-[99] ${inter.className} overflow-y-auto`}>
+      <SheetContent side="left" className={` z-[99] w-84 ${inter.className} overflow-y-auto`}>
         <SheetHeader>
           <SheetTitle className="text-2xl font-bold text-zinc-600 py-4 flex items-center gap-1 ">  <Filter fill="gray" color="gray"/>Property Filter <ChevronRightIcon/></SheetTitle>
         </SheetHeader>
@@ -373,54 +373,66 @@ const Page = () => {
           
           {/* Property Type */}
              {/* Location */}
-       <div>
+<div>
   <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
     <MapPin size={16}/>City <ChevronRight size={18}/>
   </Label>
-  <Popover open={open} onOpenChange={setOpen}>
-    <PopoverTrigger asChild>
-      <Button
-        variant="outline"
-        role="combobox"
-        aria-expanded={open}
-        className="w-full justify-between text-sm bg-white shadow rounded-full"
-      >
-        {locationFilter || "Search or select city..."}
-        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-      </Button>
-    </PopoverTrigger>
-    <PopoverContent className="w-full p-0 z-[100]">
-      <Command>
-        <CommandInput placeholder="Search city..." />
-        <CommandList>
-          <CommandEmpty>No city found.</CommandEmpty>
-          <CommandGroup>
-            {INDIAN_CITIES.map((city) => (
-              <CommandItem
-                key={city}
-                value={city}
-                onSelect={(currentValue) => {
-                  setLocationFilter(currentValue === locationFilter ? "" : currentValue);
-                  setOpen(false);
-                }}
-              
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    locationFilter === city ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                {city}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </CommandList>
-      </Command>
-    </PopoverContent>
-  </Popover>
-</div>  
-
+  <div className="relative">
+    <Input
+      type="text"
+      placeholder="Search or select city..."
+      value={locationFilter}
+      onChange={(e) => {
+        const value = e.target.value;
+        setLocationFilter(value);
+        setOpen(value.length > 0); // Only show dropdown when typing
+      }}
+      onFocus={() => locationFilter && setOpen(true)}
+      onBlur={() => {
+        // Delay to allow click on dropdown
+        setTimeout(() => {
+          // If the typed value is not in the cities list, clear it
+          if (locationFilter && !INDIAN_CITIES.some(city => 
+            city.toLowerCase() === locationFilter.toLowerCase()
+          )) {
+            setLocationFilter("");
+          }
+          setOpen(false);
+        }, 200);
+      }}
+      className="w-full text-sm bg-white shadow rounded-full"
+    />
+    {open && (
+      <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto z-[100]">
+        {INDIAN_CITIES
+          .filter(city => 
+            city.toLowerCase().includes(locationFilter.toLowerCase())
+          )
+          .slice(0, 10)
+          .map((city, index) => (
+            <div
+              key={index}
+              onMouseDown={(e) => {
+                e.preventDefault(); // Prevent blur from firing
+                setLocationFilter(city);
+                setOpen(false);
+              }}
+              className="px-4 py-2.5 hover:bg-blue-50 cursor-pointer text-sm border-b last:border-b-0"
+            >
+              {city}
+            </div>
+          ))}
+        {INDIAN_CITIES.filter(city => 
+          city.toLowerCase().includes(locationFilter.toLowerCase())
+        ).length === 0 && (
+          <div className="px-4 py-2.5 text-sm text-gray-500">
+            No cities found
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+</div>
             <div>
             <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
               <MapPin size={16}/>Area <ChevronRight size={18}/>
