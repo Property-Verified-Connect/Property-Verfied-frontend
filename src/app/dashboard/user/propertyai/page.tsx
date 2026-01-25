@@ -44,15 +44,30 @@ type Message = {
 
 type AssistantMode = "budget" | "category" | "rent" | "discuss" | null;
 
+// Session storage key
+const SESSION_STORAGE_KEY = "ai_assistant_session";
+const SESSION_EXPIRY_MS = 60000; // 1 minute
+
+type SessionData = {
+  currentMode: AssistantMode;
+  questionIndex: number;
+  userAnswers: string[];
+  currentOptions: string[];
+  allowTextInput: boolean;
+  showOptions: boolean;
+  displayback: boolean;
+  timestamp: number;
+  predictions?: any;
+  BudgetProperties?: any;
+  CategoryProperties?: any;
+};
+
 const assistantOptions = [
-  // { id: "properties", label: "View Properties with AI ", icon: Home },
   { id: "budget", label: "Budget Analysis", icon: PieChart },
   { id: "category", label: "People's Category Choice", icon: User },
   { id: "rent", label: "Rent Solutions (Smart Matching)", icon: Building2 },
   { id: "discuss", label: "AI Discuss", icon: MessageSquare },
 ];
-
-
 
 function useTypingEffect(text: string, speed = 20) {
   const [displayedText, setDisplayedText] = useState("");
@@ -78,64 +93,67 @@ function useTypingEffect(text: string, speed = 20) {
   return displayedText;
 }
 
-// Result Components
-
 const DiscussResultComponent = ({
   answers,
   predictions,
 }: {
   answers: string[];
-  
-}) => 
-{
+  predictions: any;
+}) => {
   const typedText = useTypingEffect(predictions?.SHORT_ANSWER, 15);
 
- return (
-  <div className="bg-white rounded-2xl p-4 shadow-lg max-w-md">
-    <div className="flex items-center gap-2 mb-4">
-      <div className="bg-orange-100 p-2 rounded-full">
-        <MessageSquare className="text-orange-600" size={24} />
+  return (
+    <div className="bg-white rounded-2xl p-4 shadow-lg max-w-md">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="bg-orange-100 p-2 rounded-full">
+          <MessageSquare className="text-orange-600" size={24} />
+        </div>
+        <h3 className="font-bold text-lg">AI Discussion</h3>
       </div>
-      <h3 className="font-bold text-lg">AI Discussion</h3>
-    </div>
-    <div >
-
-          {predictions?.SHORT_ANSWER}
-         <br />
-         <br />
-         <hr />
-          <br />
-       <div className="flex items-center gap-2 mb-4">
+      <div>
+        {predictions?.SHORT_ANSWER}
+        <br />
+        <br />
+        <hr />
+        <br />
+        <div className="flex items-center gap-2 mb-4">
           <div className="bg-amber-100 p-2 rounded-lg">
             <Lightbulb className="text-amber-600" size={20} />
           </div>
           <h2 className="font-bold text-gray-800 text-base">Key Points</h2>
         </div>
-          {predictions?.KEY_POINTS.map(val => <div key={val} className="flex items-start justify-start gap-2" ><Circle size={8} fill="black" className="mt-2"/> {val} <br /></div>   )}
-          <br />
-            <hr />
-            <br />
-                   <div className="flex items-center gap-2 mb-4">
-          <div className="bg-green-100 p-2 rounded-lg">
-             <MapPin className="text-green-600" size={20} />
+        {predictions?.KEY_POINTS.map((val) => (
+          <div key={val} className="flex items-start justify-start gap-2">
+            <Circle size={8} fill="black" className="mt-2" /> {val} <br />
           </div>
-          <h2 className="font-bold text-gray-800 text-base">Recommended Properties</h2>
+        ))}
+        <br />
+        <hr />
+        <br />
+        <div className="flex items-center gap-2 mb-4">
+          <div className="bg-green-100 p-2 rounded-lg">
+            <MapPin className="text-green-600" size={20} />
+          </div>
+          <h2 className="font-bold text-gray-800 text-base">
+            Recommended Properties
+          </h2>
         </div>
-    {predictions?.RECOMMENDED_PROPERTIES.map(val => <div key={val} className="flex items-start justify-start gap-2" ><Circle size={8} fill="black" className="mt-2"/> {val} <br /></div>   )}
-    
+        {predictions?.RECOMMENDED_PROPERTIES.map((val) => (
+          <div key={val} className="flex items-start justify-start gap-2">
+            <Circle size={8} fill="black" className="mt-2" /> {val} <br />
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 p-3 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg">
+        <p className="text-xs text-gray-700">
+          💡 Ask me anything about properties, investments, or area
+          recommendations!
+        </p>
+      </div>
     </div>
-
-
-
-    <div className="mt-4 p-3 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg">
-      <p className="text-xs text-gray-700">
-        💡 Ask me anything about properties, investments, or area
-        recommendations!
-      </p>
-    </div>
-  </div>
-);
-}
+  );
+};
 
 export default function AIAssistantChat() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -148,42 +166,185 @@ export default function AIAssistantChat() {
   const [displayback, setdisplayback] = useState(false);
   const [currentOptions, setCurrentOptions] = useState<string[]>([]);
   const [allowTextInput, setAllowTextInput] = useState<boolean>(false);
+  const [storedPredictions, setStoredPredictions] = useState<any>(null);
+  const [storedBudgetProperties, setStoredBudgetProperties] = useState<any>(null);
+  const [storedCategoryProperties, setStoredCategoryProperties] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
 
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth",block: "start" });
-  // };
+  // Save session to sessionStorage
+  const saveSession = (data: Partial<SessionData>) => {
+    try {
+      const sessionData: SessionData = {
+        currentMode,
+        questionIndex,
+        userAnswers,
+        currentOptions,
+        allowTextInput,
+        showOptions,
+        displayback,
+        predictions: storedPredictions,
+        BudgetProperties: storedBudgetProperties,
+        CategoryProperties: storedCategoryProperties,
+        timestamp: Date.now(),
+        ...data,
+      };
+      sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionData));
+    } catch (error) {
+      console.error("Error saving session:", error);
+    }
+  };
+
+  // Load session from sessionStorage
+  const loadSession = (): SessionData | null => {
+    try {
+      const stored = sessionStorage.getItem(SESSION_STORAGE_KEY);
+      if (!stored) return null;
+
+      const sessionData: SessionData = JSON.parse(stored);
+      const now = Date.now();
+
+      // Check if session has expired (1 minute)
+      if (now - sessionData.timestamp > SESSION_EXPIRY_MS) {
+        sessionStorage.removeItem(SESSION_STORAGE_KEY);
+        return null;
+      }
+
+      return sessionData;
+    } catch (error) {
+      console.error("Error loading session:", error);
+      return null;
+    }
+  };
+
+  // Clear session
+  const clearSession = () => {
+    sessionStorage.removeItem(SESSION_STORAGE_KEY);
+  };
+
+  // Load session on mount
+  useEffect(() => {
+    const session = loadSession();
+    if (session && session.currentMode) {
+      setCurrentMode(session.currentMode);
+      setQuestionIndex(session.questionIndex);
+      setUserAnswers(session.userAnswers);
+      setCurrentOptions(session.currentOptions);
+      setAllowTextInput(session.allowTextInput);
+      setShowOptions(session.showOptions);
+      setdisplayback(session.displayback);
+      setStoredPredictions(session.predictions);
+      setStoredBudgetProperties(session.BudgetProperties);
+      setStoredCategoryProperties(session.CategoryProperties);
+
+      // Reconstruct messages
+      reconstructMessages(session);
+    }
+  }, []);
+
+  // Reconstruct messages from session data
+  const reconstructMessages = (session: SessionData) => {
+    const flow = conversationFlows[session.currentMode as keyof typeof conversationFlows];
+    const reconstructedMessages: Message[] = [];
+
+    // Add questions and answers
+    for (let i = 0; i <= session.questionIndex && i < flow.length; i++) {
+      reconstructedMessages.push({
+        sender: "bot",
+        text: flow[i].question,
+      });
+
+      if (session.userAnswers[i]) {
+        reconstructedMessages.push({
+          sender: "user",
+          text: session.userAnswers[i],
+        });
+      }
+    }
+
+    // If we have predictions, add the result component
+    if (session.predictions) {
+      reconstructedMessages.push({
+        sender: "bot",
+        text: "Perfect! Let me analyze your responses...",
+      });
+
+      const resultComponent = getResultComponent(
+        session.currentMode as string,
+        session.userAnswers,
+        session.predictions,
+        session.BudgetProperties,
+        session.CategoryProperties
+      );
+
+      reconstructedMessages.push({
+        sender: "component",
+        component: resultComponent,
+      });
+    }
+
+    setMessages(reconstructedMessages);
+  };
+
+  // Save session whenever relevant state changes
+  useEffect(() => {
+    if (currentMode) {
+      saveSession({
+        currentMode,
+        questionIndex,
+        userAnswers,
+        currentOptions,
+        allowTextInput,
+        showOptions,
+        displayback,
+        predictions: storedPredictions,
+        BudgetProperties: storedBudgetProperties,
+        CategoryProperties: storedCategoryProperties,
+      });
+    }
+  }, [
+    currentMode,
+    questionIndex,
+    userAnswers,
+    currentOptions,
+    allowTextInput,
+    showOptions,
+    displayback,
+    storedPredictions,
+    storedBudgetProperties,
+    storedCategoryProperties,
+  ]);
 
   const scrollToBottom = () => {
-    // Get the last message object
     const lastMsg = messages[messages.length - 1];
 
     if (lastMsg?.sender === "component" && lastMessageRef.current) {
-      // If it's a component, snap its TOP to the top of the view
       lastMessageRef.current.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
     } else {
-      // For normal text/chat, snap to the very bottom
       messagesEndRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "end",
       });
     }
   };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages, showOptions]);
 
   const handleModeSelection = (mode: AssistantMode) => {
     setCurrentMode(mode);
-        setdisplayback(true);
+    setdisplayback(true);
     setQuestionIndex(0);
     setUserAnswers([]);
+    setStoredPredictions(null);
+    setStoredBudgetProperties(null);
+    setStoredCategoryProperties(null);
 
     const flow = conversationFlows[mode as keyof typeof conversationFlows];
     const firstQuestion = flow[0];
@@ -197,9 +358,9 @@ export default function AIAssistantChat() {
   const getResultComponent = (
     mode: string,
     answers: string[],
-    predictions,
-    BudgetProperties,
-    CategoryProperties
+    predictions: any,
+    BudgetProperties: any,
+    CategoryProperties: any
   ) => {
     switch (mode) {
       case "properties":
@@ -239,24 +400,24 @@ export default function AIAssistantChat() {
     console.log(answers);
     console.log(mode);
     try {
-      // Simulated API call - replace with your actual endpoint
-
       const questions = conversationFlows[mode].map((item) => item.question);
 
-      const response = await axios.post(
-        `/api/user/propertyAI`,
-        { mode, answers, questions },
-       
-      );
+      const response = await axios.post(`/api/user/propertyAI`, {
+        mode,
+        answers,
+        questions,
+      });
 
       console.log(response.data);
       const predictions = response.data.cleanResponse || {};
       const BudgetProperties = response.data.BudgetProperties || {};
       const CategoryProperties = response.data.CategoryProperties || {};
-      // const Disscusion  = response.data.
-      //  if (!predictions) {
-      //   throw new Error("No predictions received from API");
-      // }
+
+      // Store predictions for session
+      setStoredPredictions(predictions);
+      setStoredBudgetProperties(BudgetProperties);
+      setStoredCategoryProperties(CategoryProperties);
+
       console.log(predictions);
       const resultComponent = getResultComponent(
         mode,
@@ -270,41 +431,29 @@ export default function AIAssistantChat() {
         { sender: "component", component: resultComponent },
       ]);
       if (mode === "discuss") {
-        setCurrentOptions(predictions?.SUGGESTIONS || [])
+        setCurrentOptions(predictions?.SUGGESTIONS || []);
         setAllowTextInput(true);
         setShowOptions(true);
       }
     } catch (error) {
       console.error("API Error:", error);
       toast.error("Gemini Too many request try again later");
-
       router.push("/dashboard/user");
-
-      // Fallback: still show component on error
-      // const resultComponent = getResultComponent(mode, answers);
-      // setMessages((prev) => [...prev, { sender: "component", component: resultComponent }]);
-      //  if (mode === "discuss") {
-
-      //   setAllowTextInput(true);
-      //   setShowOptions(true);
-      // }
     } finally {
       setIsProcessing(false);
-      // setShowOptions(false);
     }
   };
 
   const handleOptionSelect = (option: string) => {
     handleAnswer(option);
-     setdisplayback(true);
-       
+    setdisplayback(true);
   };
 
   const handleTextSubmit = () => {
     if (input.trim() === "") return;
     handleAnswer(input);
     setInput("");
-        setdisplayback(true);
+    setdisplayback(true);
   };
 
   const handleAnswer = (answer: string) => {
@@ -320,7 +469,6 @@ export default function AIAssistantChat() {
     const nextIndex = questionIndex + 1;
 
     setShowOptions(false);
-
     setdisplayback(true);
 
     if (nextIndex < currentFlow.length) {
@@ -353,7 +501,11 @@ export default function AIAssistantChat() {
     setUserAnswers([]);
     setInput("");
     setShowOptions(false);
-    setdisplayback(false)
+    setdisplayback(false);
+    setStoredPredictions(null);
+    setStoredBudgetProperties(null);
+    setStoredCategoryProperties(null);
+    clearSession(); // Clear session storage when resetting
   };
 
   return (
@@ -419,11 +571,10 @@ export default function AIAssistantChat() {
                 </div>
               ) : (
                 <motion.div
-                  initial={{ opacity: 0 ,y:4 }}
-                  animate={{ opacity: 1 , y:0}}
-                  transition={{duration:0.5}}
-                
-                  className={`px-4 py-2 rounded-2xl  text-sm max-w-[75%] whitespace-pre-line ${
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className={`px-4 py-2 rounded-2xl text-sm max-w-[75%] whitespace-pre-line ${
                     msg.sender === "bot"
                       ? "bg-[#2588e3] text-white ml-2 border-gray-100 border-b-7 border-l-5"
                       : "bg-white text-black mr-2 border-sky-300 border-b-5 border-l-5"
@@ -451,17 +602,14 @@ export default function AIAssistantChat() {
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                    transition={{delay:0.7}}
-                  
+                  transition={{ delay: 0.7 }}
                   className="ml-2 flex flex-wrap gap-2 max-w-[75%]"
                 >
                   {currentOptions.map((option, idx) => (
                     <motion.button
-               
                       key={idx}
-                       
                       onClick={() => handleOptionSelect(option)}
-                      className="px-4 border-sky-400 border-b-5 border-l-5 py-2 bg-white text-[#007acc]  rounded-2xl text-sm font-medium hover:bg-[#007acc] hover:text-white transition-all shadow-sm hover:shadow-md animate-slideUp"
+                      className="px-4 border-sky-400 border-b-5 border-l-5 py-2 bg-white text-[#007acc] rounded-2xl text-sm font-medium hover:bg-[#007acc] hover:text-white transition-all shadow-sm hover:shadow-md animate-slideUp"
                       style={{ animationDelay: `${idx * 0.05}s` }}
                     >
                       {option}
@@ -503,20 +651,20 @@ export default function AIAssistantChat() {
         {messages.length === 0 && (
           <div className="w-full h-full flex flex-col items-center justify-center p-4">
             <h1 className="font-bold text-3xl md:text-4xl mb-8 text-center">
-  {"What can I help with?".split("").map((char, idx) => (
-    <motion.span
-      key={idx}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{
-        delay: idx * 0.05,
-        duration: 0.1
-      }}
-    >
-      {char}
-    </motion.span>
-  ))}
-</h1>
+              {"What can I help with?".split("").map((char, idx) => (
+                <motion.span
+                  key={idx}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    delay: idx * 0.05,
+                    duration: 0.1,
+                  }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </h1>
             <div className="md:w-[26rem] w-full gap-2 flex flex-wrap items-center justify-center">
               {assistantOptions.map((option) => {
                 const Icon = option.icon;
@@ -528,7 +676,7 @@ export default function AIAssistantChat() {
                     onClick={() =>
                       handleModeSelection(option.id as AssistantMode)
                     }
-                    className="p-3 rounded-full font-semibold  gap-1 flex items-center text-[11px] shadow-2xl bg-white  md:bg-none md:text-sm justify-center w-fit border-2 md:border-dashed border-gray-400 md:border-zinc-700 hover:bg-white hover:border-solid hover:shadow-md transition-all cursor-pointer"
+                    className="p-3 rounded-full font-semibold gap-1 flex items-center text-[11px] shadow-2xl bg-white md:bg-none md:text-sm justify-center w-fit border-2 md:border-dashed border-gray-400 md:border-zinc-700 hover:bg-white hover:border-solid hover:shadow-md transition-all cursor-pointer"
                   >
                     <Icon size={20} /> {option.label}
                   </motion.button>
