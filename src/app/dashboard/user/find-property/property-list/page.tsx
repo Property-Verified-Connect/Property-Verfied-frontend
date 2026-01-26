@@ -352,7 +352,7 @@ const Page = () => {
     
 
         {/* Filters */}
-        <div className="flex w-11/12 mt-1 lg:w-[35rem] sticky top-10  justify-between gap-6 items-center mb-4">
+        <div className="flex w-full px-4 mt-1 lg:w-[35rem]   justify-between  items-center mb-4">
          
          <div className="flex gap-1 lg:mr-10">
 
@@ -726,7 +726,7 @@ const Page = () => {
           ) : filteredProperties.length > 0 ? (
             // Display filtered properties
             filteredProperties.map((p, i) => (
-              <PropertyCards key={p.id || i} property={p} type="User" />
+              <PropertyCards key={i} property={p} type="User" length ={filteredProperties.length}  index ={i}/>
             ))
           ) : (
             // No results found after applying filters

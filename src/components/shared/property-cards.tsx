@@ -37,7 +37,7 @@ interface BookingCardsProps {
   mode:string
 }
 
-function PropertyCards2({ property, mode  }: BookingCardsProps) {
+function PropertyCards2({ property, mode , index , length }: BookingCardsProps) {
   // Format date helper
 
    const router = useRouter();
@@ -147,7 +147,7 @@ const handleDelectToWishlist = async (propertyId: string ) => {
       initial={{ opacity: 0, y: 20 }} 
       animate={{ y: 0, opacity: 1 }} 
       transition={{ duration: 0.3 }}
-      className="bg-white p-4 w-full shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+      className={`${index == 0 ? "rounded-t-md" : index == length ? "rounded-b-xl" :""} bg-white p-4 w-full  shadow-sm hover:shadow-md transition-shadow border border-gray-100`}
     >
       {/* Header with Image and Basic Info */}
       <div className="flex gap-3 mb-3 md:flex-row flex-col">

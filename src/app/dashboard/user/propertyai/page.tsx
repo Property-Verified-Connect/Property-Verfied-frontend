@@ -69,6 +69,13 @@ const assistantOptions = [
   { id: "discuss", label: "AI Discuss", icon: MessageSquare },
 ];
 
+const triggerHapticFeedback = (pattern: number | number[] = 50) => {
+  if ('vibrate' in navigator) {
+    navigator.vibrate(pattern);
+  }
+};
+
+
 function useTypingEffect(text: string, speed = 20) {
   const [displayedText, setDisplayedText] = useState("");
 
@@ -338,6 +345,7 @@ export default function AIAssistantChat() {
   }, [messages, showOptions]);
 
   const handleModeSelection = (mode: AssistantMode) => {
+    triggerHapticFeedback(50);
     setCurrentMode(mode);
     setdisplayback(true);
     setQuestionIndex(0);
@@ -445,6 +453,7 @@ export default function AIAssistantChat() {
   };
 
   const handleOptionSelect = (option: string) => {
+    triggerHapticFeedback([30, 20]);
     handleAnswer(option);
     setdisplayback(true);
   };
@@ -495,6 +504,7 @@ export default function AIAssistantChat() {
   };
 
   const handleReset = () => {
+      triggerHapticFeedback([50, 30, 50]);
     setMessages([]);
     setCurrentMode(null);
     setQuestionIndex(0);
