@@ -84,7 +84,7 @@ export default function RecommandationCard({property ,type}) {
         {/* Price and Action */}
         <div className="flex items-start justify-between w-full flex-col ">
        
-       <Link className='w-full'  href={`/dashboard/user/find-property/property-list/proprerty-info/${property.id}`}>
+       <Link className='w-full'  href={`/dashboard/user/find-property/property-list/proprerty-info/${property.id}?navigation=ai`}>
        
           <button className="bg-[#2396C6]  hover:bg-blue-700 text-white px-1 py-1 mt-2 w-full rounded-lg font-semibold text-sm transition-colors duration-200 shadow-md hover:shadow-lg">
            Visit Property

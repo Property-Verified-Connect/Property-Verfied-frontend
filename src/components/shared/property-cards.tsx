@@ -305,7 +305,8 @@ const handleDelectToWishlist = async (propertyId: string ) => {
       )}
 
       {/* Action Button */}
-      <Link href={ `/dashboard/user/find-property/property-list/proprerty-info/${property.id}`
+      <Link href={mode == "wishlist" ? `/dashboard/user/find-property/property-list/proprerty-info/${property.id}?navigation=wishlist`: 
+      `/dashboard/user/find-property/property-list/proprerty-info/${property.id}`
       
       }>
         <button className={`${inter.className} w-full bg-cvr hover:bg-[#0070dd] text-white font-semibold py-2 rounded-lg text-sm transition-colors`}>

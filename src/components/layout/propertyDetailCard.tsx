@@ -50,6 +50,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { Inter } from "next/font/google";
 import SliderImage from "../shared/SliderImage";
+import { useSearchParams } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -59,8 +60,13 @@ function PropertyDetailsPage({
   type,
   propertybooking,
 }) {
+  const searchParams = useSearchParams()
+
   const [isFavorited, setIsFavorited] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+
+  const navigation = searchParams.get('navigation')
+
 
   const formatPrice = (price) => {
     if (!price)
@@ -113,9 +119,9 @@ function PropertyDetailsPage({
       {/* Header */}
       <div className="w-11/12 max-w-md flex items-center justify-between mb-3">
         <div className="flex gap-2 items-center">
-          {type == "lead" ? (
+          {navigation == "ai" ? (
             <>
-              <Link href="/dashboard/partner/lead-received/">
+              <Link href="/dashboard/user/propertyai">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -124,9 +130,24 @@ function PropertyDetailsPage({
                   <ArrowLeft className="text-[#007BFF]" />
                 </Button>
               </Link>
-              <h1 className="font-bold text-2xl text-gray-700">Lead Recived</h1>
+           
             </>
-          ) : (
+          ) : navigation == "wishlist" ?  
+          
+           <>
+              <Link href="/dashboard/user/wishlist">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full hover:bg-[#E2F1FF] p-3 bg-white"
+                >
+                  <ArrowLeft className="text-[#007BFF]" />
+                </Button>
+              </Link>
+           
+            </>
+          
+          : (
             <>
               <Link href="/dashboard/user/find-property/property-list">
                 <Button
@@ -137,11 +158,12 @@ function PropertyDetailsPage({
                   <ArrowLeft className="text-[#007BFF]" />
                 </Button>
               </Link>
-              <h1 className="font-bold text-2xl text-gray-700">
-                Property Details
-              </h1>
+          
             </>
           )}
+           <h1 className="font-bold text-2xl text-gray-700">
+                Property Details
+              </h1>
         </div>
         <div className="flex gap-2">
           <Button
