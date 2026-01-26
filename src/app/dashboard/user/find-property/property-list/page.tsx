@@ -318,7 +318,7 @@ const Page = () => {
   return (
     <>
       <Nav />
-      <div className="bg-prv min-h-screen w-full overflow-hidden flex flex-col items-center pt-15 pb-20">
+      <div className="bg-prv relative min-h-screen w-full overflow-hidden flex flex-col items-center pt-15 pb-20">
         {/* Search Bar */}
         <div className="flex items-cente w-full px-4 lg:w-[40rem] justify-center gap-1 md:gap-3">
           <Link href={"/dashboard/user"}>
@@ -340,10 +340,10 @@ const Page = () => {
         </div>
 
         {/* Title */}
-        <div className="w-96 lg:w-[35rem] flex flex-col items-center justify-between   ">
+        <div className="w-96 relative lg:w-[35rem] flex flex-col items-center justify-between   ">
 
-        <div className="py-2 px-5 md:-ml-20 flex items-start w-96 lg:w-[35rem] ">
-          <h1 className={`${inter.className} font-bold text-gray-600 text-2xl lg:text-3xl flex items-center justify-center`}>
+        <div className=" px-5 md:-ml-20 flex items-start w-96 lg:w-[35rem] ">
+          <h1 className={`${inter.className} font-bold text-gray-600 text-xl lg:text-3xl flex items-center justify-center`}>
            Property List <ChevronRight />
           </h1>
         </div>
@@ -352,7 +352,7 @@ const Page = () => {
     
 
         {/* Filters */}
-        <div className="flex w-11/12 lg:w-[35rem]  justify-between gap-6 items-center mb-4">
+        <div className="flex w-11/12 mt-1 lg:w-[35rem] sticky top-10  justify-between gap-6 items-center mb-4">
          
          <div className="flex gap-1 lg:mr-10">
 
@@ -700,7 +700,7 @@ const Page = () => {
         )}
         
         {/* Property Cards */}
-        <div className='h-full w-96 lg:w-[45rem] px-5 flex mt-2 flex-col gap-2'>
+        <div className='h-full w-full px-2 lg:w-[45rem] rounded-xl overflow-hidden flex mt-2 flex-col '>
           {isLoading ? (
             // Loading state
             <div className='flex flex-col gap-1'>

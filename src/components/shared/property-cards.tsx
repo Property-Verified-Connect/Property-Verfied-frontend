@@ -147,7 +147,7 @@ const handleDelectToWishlist = async (propertyId: string ) => {
       initial={{ opacity: 0, y: 20 }} 
       animate={{ y: 0, opacity: 1 }} 
       transition={{ duration: 0.3 }}
-      className="bg-white rounded-xl p-4 w-full shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+      className="bg-white p-4 w-full shadow-sm hover:shadow-md transition-shadow border border-gray-100"
     >
       {/* Header with Image and Basic Info */}
       <div className="flex gap-3 mb-3 md:flex-row flex-col">
@@ -162,7 +162,7 @@ const handleDelectToWishlist = async (propertyId: string ) => {
           <SliderImage Image={property?.photos}/>
           </div>
 
-          <span className={`absolute capitalize top-1 right-1 text-[10px] font-semibold px-2 py-0.5 rounded-full ${getStatusColor(property.status)}`}>
+          <span className={`absolute z-[99] capitalize top-1 right-1 text-[10px] font-semibold px-2 py-0.5 rounded-full ${getStatusColor(property.status)}`}>
             {property.status}
           </span>
         </div>
@@ -252,19 +252,27 @@ const handleDelectToWishlist = async (propertyId: string ) => {
                {property.property_type == "Independent House / Villa" ? <House size={12}/>:property.property_type == "Plot / Land" ?  <Grid2X2 size={12}/> :    <Building size={12}/>}
               {property.property_type == "Independent House / Villa" ?"House / Villa":property.property_type}
             </span>
-            <span className="bg-gray-100 lg:text-lg text-gray-700 text-sm font-semibold px-2 py-1 rounded">
-              ₹{property.price.toLocaleString('en-IN')}
+              <span className="bg-gray-100 lg:text-lg text-gray-700 text-sm font-semibold px-2 py-1 rounded">
+              {property.property_kind.toLocaleString('en-IN')}
             </span>
+          
                <span className="bg-gray-100  block md:hidden lg:text-lg text-gray-700  text-sm font-semibold px-2 py-1 rounded">
               {property.looking_for}
             </span>
           </div>
+
             <div className="md:flex items-center-center gap-2  hidden ">
           <span className="bg-gray-100 lg:text-lg text-gray-700 mt-1 text-sm font-semibold px-2 py-1 rounded">
               {property.looking_for}
             </span>
         </div>
-        
+        <hr  className='mt-2'/>
+         <div className='text-xl mt-1'>
+            <span className="bg-gray-100 lg:text-lg text-gray-700 text-lg font-semibold px-2 py-1 rounded">
+              ₹{property.price.toLocaleString('en-IN')}  {property?.looking_for == "Rent / Lease" ?"/ month" :""} 
+            </span>
+         </div>
+
          <div className="hidden items-center  lg:block md:hidden h-auto   gap-2">
   <span className="bg-gray-100 text-gray-700 mt-1 text-xs font-semibold px-2 py-1 rounded line-clamp-2">
     {property.description}
