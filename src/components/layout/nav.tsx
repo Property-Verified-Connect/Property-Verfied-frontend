@@ -33,7 +33,7 @@ function Nav() {
        <h1  >Home</h1>
       </Link>
         <Link href={"/dashboard/user"}>
-       <h1>Menu</h1>
+       <h1>Profile</h1>
       </Link>
        <h1>Order</h1>
      </div>
