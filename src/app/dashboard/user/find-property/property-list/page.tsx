@@ -180,7 +180,7 @@ const Page = () => {
     // Search filter
     if (searchQuery.trim()) {
       filtered = filtered.filter(property =>
-        property.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        property.property_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         property.location?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
@@ -320,7 +320,9 @@ const Page = () => {
       <Nav />
       <div className="bg-prv relative min-h-screen w-full overflow-hidden flex flex-col items-center pt-15 pb-20">
         {/* Search Bar */}
-        <div className="flex items-cente w-full px-4 lg:w-[40rem] justify-center gap-1 md:gap-3">
+        <div className=" fixed bg-[#CDE4F9] -mt-3 w-full flex items-center justify-center flex-col z-[99] ">
+
+        <div className="flex items-cente mt-4 w-full px-4 lg:w-[40rem] justify-center gap-1 md:gap-3">
           <Link href={"/dashboard/user"}>
             <Button variant="outline" className="mb-2 rounded-full">
               <ArrowLeft />
@@ -343,7 +345,7 @@ const Page = () => {
         <div className="w-96 relative lg:w-[35rem] flex flex-col items-center justify-between   ">
 
         <div className=" px-5 md:-ml-20 flex items-start w-96 lg:w-[35rem] ">
-          <h1 className={`${inter.className} font-bold text-gray-600 text-xl lg:text-3xl flex items-center justify-center`}>
+          <h1 className={`${inter.className}  md:flex  font-bold text-gray-600 text-xl lg:text-3xl hidden items-center justify-center`}>
            Property List <ChevronRight />
           </h1>
         </div>
@@ -445,7 +447,7 @@ const Page = () => {
               className="w-full text-sm bg-white shadow rounded-full"
             />
           </div>
-          <div>
+          <div >
 
 
             <Label className="mb-2 font-semibold text-[#2396C6] flex gap-1 items-center">
@@ -455,7 +457,7 @@ const Page = () => {
               <SelectTrigger className="text-sm w-full bg-white shadow rounded-full">
                 <SelectValue placeholder="Property Type" />
               </SelectTrigger>
-              <SelectContent className="z-99">
+              <SelectContent className="z-99 ">
                 <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="apartment"><Building size={14}/> Apartment</SelectItem>
                 <SelectItem value="plot / land"><Grid size={14}/> Plot / Land</SelectItem>
@@ -636,7 +638,7 @@ const Page = () => {
               <SelectTrigger className="w-[120px] text-sm bg-white shadow rounded-full">
                 <SelectValue placeholder="Property Type" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="mt-3">
                 <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="apartment"><Building size={10}/> Apartment</SelectItem>
                 <SelectItem value="plot / land"><Grid size={10}/> Plot / Land</SelectItem>
@@ -650,7 +652,7 @@ const Page = () => {
               <SelectTrigger className="w-[90px] text-sm bg-white shadow rounded-full">
                 <SelectValue placeholder="Configuration" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="mt-3">
                 <SelectItem value="all">All</SelectItem>
                 <SelectItem value="sell">Sell</SelectItem>
                 <SelectItem value="rent / lease">Rent / Lease</SelectItem>
@@ -661,12 +663,14 @@ const Page = () => {
           </div>
         </div>
         </div>
+
+        </div>
         
         {activeFilters.length > 0 && (
           <motion.div 
            initial={{opacity:0 , y:10}} 
             animate={{opacity:10 , y:0}}
-           className="w-11/12 max-w-md mb-3 p-3 bg-white  rounded-lg shadow">
+           className="w-[92%] max-w-md mb-3 p-2 px-5 md:mt-40 mt-30 bg-white  rounded-lg shadow">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-bold text-gray-600">Active Filters</span>
               <Button 
@@ -700,7 +704,7 @@ const Page = () => {
         )}
         
         {/* Property Cards */}
-        <div className='h-full w-full px-2 lg:w-[45rem] rounded-xl overflow-hidden flex mt-2 flex-col '>
+        <div className={`h-full w-full px-2 lg:w-[45rem] rounded-xl overflow-hidden flex ${activeFilters.length > 0  ? "mt-0" : "mt-30 md:mt-40"}  flex-col  `}>
           {isLoading ? (
             // Loading state
             <div className='flex flex-col gap-1'>

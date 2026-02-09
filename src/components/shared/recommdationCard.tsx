@@ -2,6 +2,7 @@ import React from 'react';
 import { MapPin, Home, Bed, Bath, Square, Heart, Building, Grid2X2, House, Star, CheckCircle, PanelBottom } from 'lucide-react';
 import Link from 'next/link';
 import { Span } from 'next/dist/trace';
+import { Skeleton } from '../ui/skeleton';
  
  
 export default function RecommandationCard({property ,type}) {
@@ -74,7 +75,16 @@ export default function RecommandationCard({property ,type}) {
 
         <div className="flex items-center h-auto mt-1   gap-2">
   <span className="bg-gray-100 text-gray-700 mt-1 py-0.5 text-xs font-semibold px-2 rounded line-clamp-3">
-    {property.description}
+
+                  {  property?.description  ? 
+                   <div 
+      className="font-normal"
+      dangerouslySetInnerHTML={{ __html: property.description }}
+    />
+                  :
+                  <Skeleton className="h-20 bg-[#D5E8FA] w-[60%] rounded-xl" />
+
+                  }
   </span>
 </div>
 

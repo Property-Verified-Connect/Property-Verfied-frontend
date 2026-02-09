@@ -42,6 +42,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { useParams } from "next/navigation";
 import { getCookieValue } from "@/function/cookies";
 import PropertyDetailsPage from "@/components/layout/propertyDetailCard";
+
 import toast from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -262,9 +263,15 @@ const isValidTimeSlot = (time: string): boolean => {
       {/* Action Buttons */}
       <div className={`${inter.className} w-full flex items-center justify-center`}>
         <div className="flex items-center justify-center fixed shadow rounded-2xl bottom-4 bg-white p-4 gap-3 w-full max-w-md">
-          <Button className="flex-1 bg-[#2396C6] hover:bg-[#0062cc] text-white py-5 text-base rounded-xl font-medium shadow">
+          
+          {
+              propertyDetails?.brochure &&
+           <Link href={`${propertyDetails?.brochure}`}>
+          <Button onClick={()=>(console.log(`${propertyDetails?.brochure}`))}  className="flex-1 w-42 md:w-50 bg-[#2396C6] hover:bg-[#0062cc] text-white py-5 text-base rounded-xl font-medium shadow">
             <Download /> Brochure
           </Button>
+           </Link>
+          }
 
           {/* Book Visit Dialog */}
           <Dialog open={showBookingDialog} onOpenChange={setShowBookingDialog}>

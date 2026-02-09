@@ -324,9 +324,17 @@ function PropertyDetailsPage({
               </h1>
               <div className="flex items-center  gap-1">
                 <h1 className="font-normal">
-                  {propertyDetails?.description || (
-                    <Skeleton className="h-20 bg-[#D5E8FA] w-[60%] rounded-xl" />
-                  )}
+
+                  {  propertyDetails?.description  ? 
+                   <div 
+      className="font-normal"
+      dangerouslySetInnerHTML={{ __html: propertyDetails.description }}
+    />
+                  :
+                  <Skeleton className="h-20 bg-[#D5E8FA] w-[60%] rounded-xl" />
+
+                  }
+                
                 </h1>
               </div>
             </div>

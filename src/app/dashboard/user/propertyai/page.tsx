@@ -31,6 +31,7 @@ import axios from "axios";
 import { getCookieValue } from "@/function/cookies";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 
 const BaseURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -145,11 +146,38 @@ const DiscussResultComponent = ({
             Recommended Properties
           </h2>
         </div>
-        {predictions?.RECOMMENDED_PROPERTIES.map((val) => (
-          <div key={val} className="flex items-start justify-start gap-2">
-            <Circle size={8} fill="black" className="mt-2" /> {val} <br />
-          </div>
-        ))}
+   {predictions?.RECOMMENDED_PROPERTIES.map((val, index) => (
+  <div
+    key={index}
+    className="bg-white rounded-xl mb-2 shadow-md border border-gray-200 p-5 w-full max-w-md hover:shadow-lg transition"
+  >
+    {/* Property Name */}
+    <h2 className="text-lg font-semibold text-gray-800 mb-2">
+      {val?.name}
+    </h2>
+
+    {/* Location */}
+    <p className="text-sm text-gray-600 mb-1">
+      📍 <span className="font-medium">Location:</span> {val?.location}
+    </p>
+
+    {/* Tag */}
+    <span className="inline-block bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full mb-2">
+      {val?.tag}
+    </span>
+
+    {/* Reason */}
+    <p className="text-sm text-gray-700 mt-2">
+      <span className="font-medium">Why recommended:</span><br />
+      {val?.reason}
+    </p>
+  
+  <Link href={`/dashboard/user/find-property/property-list/proprerty-info/${val.id}?navigation=ai`}>
+    <Button variant={"selectdashed" } className="mt-2 w-full">Vist Site</Button>
+  </Link>
+  </div>
+))}
+
       </div>
 
       <div className="mt-4 p-3 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg">
