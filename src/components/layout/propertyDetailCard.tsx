@@ -386,7 +386,7 @@ function PropertyDetailsPage({
               <div>
                   <p className="text-xs text-gray-600">{ propertyDetails?.bedroom ? "Bedroom" : "Has Boundary" }</p>
                 <p className="font-semibold text-sm text-gray-800">
-                  {propertyDetails?.bedroom || propertyDetails?.Boundary}
+                  {propertyDetails?.bedroom || propertyDetails?.Boundary ? 'Yes':"No"}
                 </p>
               </div>
             </div>
@@ -609,6 +609,9 @@ propertyDetails?.AvailabilityStatus &&
       </Card>
 
       {/* Additional Details */}
+ 
+ {
+   propertyDetails?.property_type !== "Plot / Land" &&
     <Card className="bg-white w-11/12 max-w-md rounded-lg shadow-sm border border-gray-200 mb-3">
   <CardContent className="p-6">
     <h3 className="font-semibold flex items-center gap-2 text-pvr text-lg mb-5 pb-3 border-b border-gray-100">
@@ -688,6 +691,9 @@ propertyDetails?.AvailabilityStatus &&
   </CardContent>
 </Card>
 
+ }
+
+
       {/* Features & Amenities */}
       <Card className="bg-white w-11/12 max-w-md rounded-2xl shadow-lg border-none mb-3">
         <CardContent className="p-5">
@@ -719,12 +725,15 @@ propertyDetails?.AvailabilityStatus &&
               <MapPin size={16} />
               <span className="text-sm font-medium">Prime Location</span>
             </div> */}
+            {
+               propertyDetails?.balconies &&
             <div className="flex items-center gap-2 bg-[#E9F4FF] text-[#007BFF] px-3 py-2 rounded-lg">
               <Home size={16} />
               <span className="text-sm font-medium">
                 {propertyDetails?.balconies} Balcony
               </span>
             </div>
+            }
           </div>
         </CardContent>
       </Card>
