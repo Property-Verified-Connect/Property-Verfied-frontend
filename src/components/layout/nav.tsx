@@ -1,9 +1,11 @@
 "use client"
-import React, { useEffect ,useState } from 'react'
-import Image  from 'next/image'
+import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { Bell } from 'lucide-react'
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
+import { Button } from '../ui/button'
+import { useRouter } from 'next/navigation'
 
 
 const inter = Inter({
@@ -12,46 +14,57 @@ const inter = Inter({
 });
 
 function Nav() {
-   const [user, setUser] = useState();
-   useEffect(() => {
-        const storedUser = localStorage.getItem("userdata");
-        if (storedUser) {
-            const parsed = JSON.parse(storedUser) as User;
-            setUser(parsed);
-        }
-    }, []);
+  const [user, setUser] = useState();
+  const Router = useRouter();
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userdata");
+    if (storedUser) {
+      const parsed = JSON.parse(storedUser) as User;
+      setUser(parsed);
+    }
+  }, []);
   return (
     <div className='h-12 fixed top-0 md:gap-0 gap-40  z-80 w-full md:p-4 px-0 bg-white shadow flex items-center justify-between'>
-          <div className='h-10 w-50  scale-110 flex items-center justify-center'>
-           
-        <Image src={'/image/Logo.png'} height={120} width={100} alt='logo'/>
-          </div>
+      <div className='h-10 w-50  scale-110 flex items-center justify-center'>
 
-<div className={`${inter.className}  font-medium text-gray-600  md:flex items-center justify-center gap-10 pr-2 md:pr-20`}>
-     <div className=' md:flex gap-10 hidden  '>
-      <Link  href={"/"}>
-       <h1  >Home</h1>
-      </Link>
-        <Link href={"/dashboard/user"}>
-       <h1>Profile</h1>
-      </Link>
-       <h1>Order</h1>
-     </div>
-     <div className='flex gap-3 items-center '>
-  
+        <Image src={'/image/Logo.png'} height={120} width={100} alt='logo' />
+      </div>
 
-
-<div className='h-10 w-10 bg-[#2396C6] text-white  flex items-center justify-center  border-2  rounded-full'>
-       <h1>
-          {user?.name.slice(0,1)}
-       </h1>
-</div>
-
-     </div>
+      <div className={`${inter.className}  font-medium text-gray-600  md:flex items-center justify-center gap-10 pr-2 md:pr-20`}>
+        <div className=' md:flex gap-10 hidden  '>
+          <Link href={"/"}>
+            <h1  >Home</h1>
+          </Link>
+          <Link href={"/dashboard/user"}>
+            <h1>Profile</h1>
+          </Link>
+          <h1>Order</h1>
+        </div>
+        <div className='flex gap-3 items-center '>
 
 
-</div>
-        
+          {
+            user && user?.name.length > 0 ?
+
+              <div className='h-10 w-10 bg-[#2396C6] text-white  flex items-center justify-center  border-2  rounded-full'>
+                <h1>
+                  {user?.name.slice(0, 1)}
+                </h1>
+              </div>
+              :
+
+              <Link href={"/auth/login"}>
+                <Button variant={"selectdashed"}>Login</Button>
+
+              </Link>
+
+          }
+
+        </div>
+
+
+      </div>
+
 
 
     </div>

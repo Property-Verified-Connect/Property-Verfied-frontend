@@ -1,123 +1,187 @@
-"use client";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import GoogleIcon from "../../public/icons/googleicon";
-import inter from "@/lib/font/Inter";
-import { CircleCheck } from "lucide-react";
+"use client"
+import Nav from "@/components/layout/nav";
+import FeatureCard from "@/components/shared/VedioCard";
+import {motion , AnimatePresence} from "framer-motion"
+import { useEffect , useState } from "react";
 
-export default function Home() {
-  const [showCard, setShowCard] = useState(false);
+export default function Page() {
+  
+const words = ["Search ", "Matching ", "Verified !"];
 
-  // Show card after logo animation
-  useEffect(() => {
-    const timer = setTimeout(() => setShowCard(true), 3200);
-    return () => clearTimeout(timer);
+const letterVariants = {
+  hidden: { y: 50, opacity: 0, rotateX: -90 },
+  visible: (i) => ({
+    y: 0,
+    opacity: 1,
+    rotateX: 0,
+    transition: {
+      delay: i * 0.06,
+      duration: 0.45,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
+  exit: (i) => ({
+    y: -40,
+    opacity: 0,
+    rotateX: 90,
+    transition: {
+      delay: i * 0.03,
+      duration: 0.25,
+      ease: [0.4, 0, 1, 1],
+    },
+  }),
+};
+
+
+const Vedio = [{
+     
+  video:"./image",
+  Name:"Budget Analyzier "
+} , 
+{
+     
+  video:"./image",
+  Name:"Budget Analyzier "
+},{
+     
+  video:"./image",
+  Name:"Budget Analyzier "
+},{
+     
+  video:"./image",
+  Name:"Budget Analyzier "
+}]
+
+const [index, setIndex] = useState(0);
+ useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % words.length);
+    }, 2600);
+    return () => clearInterval(interval);
   }, []);
 
+   const word = words[index];
+
   return (
-    <div className="h-screen container w-full flex flex-col items-center justify-center bg-gray-50 overflow-hidden">
-      {/* Logo animation */}
-      {!showCard && (
-        <motion.div
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: [0, 1, 1, 0] }}
-          transition={{
-            duration: 3.2,
-            times: [0, 0.2, 0.8, 1],
-            ease: [0.45, 0, 0.55, 1], // smoother easeInOut cubic-bezier
-          }}
-        >
-          <Image
-            src="/image/Logo.png"
-            height={100}
-            width={400}
-            alt="logo"
-            className="drop-shadow-md"
-          />
-        </motion.div>
-      )}
 
-      {/* Card animation */}
-      {showCard && (
-        <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.92 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{
-            type: "spring",
-            stiffness: 80,
-            damping: 15,
-            duration: 0.8,
-            ease: [0.22, 1, 0.36, 1], // smooth “easeOutBack” feel
-          }}
-        >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-md p-6 w-90 md:w-[30rem] bg-white rounded-2xl shadow-lg">
-            {/* Logo inside card */}
-            <div className="h-20 w-60 m-auto flex items-center justify-center">
-              <Image
-                src="/image/Logo.png"
-                alt="logo"
-                width={140}
-                height={100}
-                className="scale-140"
-              />
-            </div>
-
-            {/* Text */}
-            <div
-              className={`${inter.className} flex items-center justify-center flex-col`}
+    <>
+     <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
+        .heading-font { font-family: 'Playfair Display', Georgia, serif; }
+        .word-slot {
+          display: inline-flex;
+          align-items: flex-end;
+          overflow: hidden;
+          perspective: 500px;
+          min-width: 9ch;
+          vertical-align: bottom;
+        }
+      `}</style>
+    <Nav/>
+    <div className="min-h-screen mt-20 font-serif">
+      {/* Header */}
+      <header className="px-10 pt-10 pb-6">
+        <div className="flex flex-col">
+          {/* Left: Title */}
+           <h1 className="heading-font text-5xl font-bold tracking-tight text-stone-900 leading-[1.1]">
+        AI Powered
+        <br />
+        Property{" "}
+        <span className="word-slot h-15">
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={word}
+              style={{ display: "inline-flex" }}
+              aria-label={word}
             >
-              <h2
-                className={`${inter.className} text-[#247FBA] text-2xl font-bold mb-6 text-center flex items-center justify-center gap-1`}
-              >
-                Welcome to Property <CircleCheck className="mt-1" />
-              </h2>
-              <p className="-mt-6 text-xs font-bold text-center text-gray-400 mb-3">
-                Login to an account <br />
-                to connect with your interested verified property
-              </p>
-            </div>
+              {word.split("").map((letter, i) => (
+                <motion.span
+                  key={i}
+                  custom={i}
+                  variants={letterVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  style={{
+                    display: "inline-block",
+                    transformOrigin: "top center",
+                  }}
+                >
+                  {letter}
+                </motion.span>
+              ))}
+            </motion.span>
+          </AnimatePresence>
+        </span>
+      </h1>
+         
+          
 
-            {/* Buttons */}
-            <div className="flex items-center justify-center flex-col">
-            <Link href={"/auth/sign-in"}>
-              <Button
-                type="submit"
-                className="w-80 mt-4 bg-[#247FBA] transition-all hover:scale-105 hover:bg-white hover:border-2 hover:text-[#247FBA]"
-              >
-                Sign-in
-              </Button>
-            </Link>
-             
-             <Link href={"/auth/login"}>
-              <Button
-                type="submit"
-                className="w-80 mt-4 bg-[#247FBA] transition-all hover:scale-105 hover:bg-white hover:border-2 hover:text-[#247FBA]"
-              >
-                Login
-              </Button>
-             </Link>
-            </div>
+          {/* Right: Copyright + Tagline */}
+          {/* <div className="text-right max-w-xs">
+            <p className="text-xs text-stone-500 mb-4">©2024 BDARCH STUDIO. All Rights Reserved</p>
+            <p className="text-sm text-stone-600 leading-relaxed text-left">
+              Architects of inspirational environments, we redefine spaces, creating environments that inspire, uplift, and enhance the human experience.
+            </p>
+          </div> */}
+        </div>
+      </header>
 
-            <hr className="mt-3" />
-
-            <h2
-              className={`text-xs ${inter.className} font-bold text-gray-500 text-center mt-2`}
-            >
-              Or
-            </h2>
-
-            <div className="w-full flex items-center justify-center">
-              <Button className="w-50 m-auto mt-2 transition-all hover:scale-105 hover:bg-white hover:border-2 bg-white border-2 text-[#247FBA]">
-                <GoogleIcon />
-                Google Login
-              </Button>
-            </div>
+      {/* Image Grid */}
+      <section className="px-10 pb-12">
+        <div className="flex gap-2 h-72">
+          {/* Large Left Image */}
+          <div className="flex-[2.5] scale-90 border-2 overflow-hidden rounded-sm">
+            <img
+              src="./image/logo.png"
+              
+              alt="Modern home with stone and timber facade surrounded by lush garden"
+              className="w-full    md:scale-75  h-full object-cover hover:scale-90 transition-transform duration-700"
+            />
           </div>
-        </motion.div>
-      )}
+
+          {/* Middle Image */}
+          <div className="flex-1 overflow-hidden hidden md:block rounded-sm">
+            <img
+              src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=500&q=80"
+              alt="Minimalist white exterior architecture"
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+            />
+          </div>
+
+          {/* Right Image */}
+          <div className="flex-1 overflow-hidden hidden md:block rounded-sm">
+            <img
+              src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=500&q=80"
+              alt="White farmhouse style modern home"
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section className="px-10 pb-16">
+        {/* Divider with label */}
+        <div className="flex items-center justify-center gap-4 mb-8">
+          <span className="text-3xl tracking-widest text-stone-700 uppercase">Our features</span>
+         
+        </div>
+
+        {/* About Text */}
+        <div className="min-h-screen  flex items-start justify-center  gap-2">
+          {
+            Vedio.map((val ,index)=>(
+              <div key={index} className="h-96 w- bg-red-300">
+                        <FeatureCard/>
+                  
+
+              </div>
+            ))
+          }
+        </div>
+      </section>
     </div>
+    </>
   );
 }
