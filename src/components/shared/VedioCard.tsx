@@ -21,18 +21,18 @@ const PostIcon = () => (
   </svg>
 );
 
-export default function FeatureCard() {
+export default function FeatureCard({FeatureName}) {
   const [followed, setFollowed] = useState(false);
 
   return (
   
-      <div style={{ background: "white", borderRadius: "24px", width: "400px", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.10)" }}>
+      <div style={{ background: "white" ,borderRadius: "24px", width: "370px", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.10)" }}>
         <div style={{ width: "100%", height: "370px", overflow: "hidden", background: "#d1dce8" }}>
-          <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80&fit=crop&crop=face" alt="Sophie Bennett" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
+          <video src="./Feature/budget.mp4" autoPlay loop muted alt="Sophie Bennett" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
         </div>
         <div style={{ padding: "18px 20px 20px 20px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "6px" }}>
-            <span style={{ fontSize: "20px", fontWeight: "700", color: "#111827" }}>Sophie Bennett</span>
+            <span style={{ fontSize: "20px", fontWeight: "700", color: "#111827" }}>{FeatureName}</span>
             <VerifiedBadge />
           </div>
           <p style={{ fontSize: "13.5px", color: "#6b7280", lineHeight: "1.55", margin: "0 0 18px 0" }}>Product Designer who focuses<br/>on simplicity & usability.</p>

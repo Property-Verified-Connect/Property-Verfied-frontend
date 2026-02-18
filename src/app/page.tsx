@@ -3,10 +3,12 @@ import Nav from "@/components/layout/nav";
 import FeatureCard from "@/components/shared/VedioCard";
 import {motion , AnimatePresence} from "framer-motion"
 import { useEffect , useState } from "react";
+import Image from "next/image";
+import { Fullscreen } from "lucide-react";
 
 export default function Page() {
   
-const words = ["Search ", "Matching ", "Verified !"];
+const words = ["Search ! ", "Matching ! ", "Verified !"];
 
 const letterVariants = {
   hidden: { y: 50, opacity: 0, rotateX: -90 },
@@ -41,15 +43,15 @@ const Vedio = [{
 {
      
   video:"./image",
-  Name:"Budget Analyzier "
+  Name:"People's Category Choice "
 },{
      
   video:"./image",
-  Name:"Budget Analyzier "
+  Name:" Rent Solution "
 },{
      
   video:"./image",
-  Name:"Budget Analyzier "
+  Name:"Ai Discuss"
 }]
 
 const [index, setIndex] = useState(0);
@@ -87,7 +89,7 @@ const [index, setIndex] = useState(0);
         AI Powered
         <br />
         Property{" "}
-        <span className="word-slot h-15">
+        <span className="word-slot text-[#2395C5] h-15">
           <AnimatePresence mode="wait">
             <motion.span
               key={word}
@@ -131,13 +133,8 @@ const [index, setIndex] = useState(0);
       <section className="px-10 pb-12">
         <div className="flex gap-2 h-72">
           {/* Large Left Image */}
-          <div className="flex-[2.5] scale-90 border-2 overflow-hidden rounded-sm">
-            <img
-              src="./image/logo.png"
-              
-              alt="Modern home with stone and timber facade surrounded by lush garden"
-              className="w-full    md:scale-75  h-full object-cover hover:scale-90 transition-transform duration-700"
-            />
+          <div className="flex items-center justify-center  border-2 overflow-hidden rounded-sm">
+                    <Image src={'/image/Logo.png'} className="md:scale-80" height={400} width={900} alt='logo' />
           </div>
 
           {/* Middle Image */}
@@ -164,19 +161,16 @@ const [index, setIndex] = useState(0);
       <section className="px-10 pb-16">
         {/* Divider with label */}
         <div className="flex items-center justify-center gap-4 mb-8">
-          <span className="text-3xl tracking-widest text-stone-700 uppercase">Our features</span>
+          <span className="text-3xl tracking-widest text-stone-700 uppercase">Our Features</span>
          
         </div>
 
         {/* About Text */}
-        <div className="min-h-screen  flex items-start justify-center  gap-2">
+        <div className="min-h-screen flex-col md:flex-row flex items-center justify-center gap-20">
           {
             Vedio.map((val ,index)=>(
-              <div key={index} className="h-96 w- bg-red-300">
-                        <FeatureCard/>
+                        <FeatureCard key={index} FeatureName={val.Name}/>
                   
-
-              </div>
             ))
           }
         </div>
