@@ -4,8 +4,10 @@ import Nav from "@/components/layout/nav";
 import FeatureCard from "@/components/shared/VedioCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import PropertyHero from "@/components/layout/propertyhero";
+import Image from "next/image";
+import { inter } from "@/lib/font/Inter";
+
 
 export default function Page() {
   /* =========================
@@ -61,9 +63,9 @@ export default function Page() {
   };
 
   const Vedio = [
-    { Name: "Budget Analyzer" },
-    { Name: "People's Category Choice" },
-    { Name: "Rent Solution" },
+    { Name: " AI Budget Analyzer" },
+    { Name: "AI People's Category Choice" },
+    { Name: "AI Rent Solution" },
     { Name: "AI Discuss" },
   ];
 
@@ -181,19 +183,49 @@ export default function Page() {
         
 
         {/* Features Section */}
-        {/* <section className="px-10 pb-16">
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <span className="text-3xl tracking-widest text-stone-700 uppercase">
-              Our Features
-            </span>
-          </div>
+       <section className="relative px-6 md:px-16 py-24 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
 
-          <div className="min-h-screen flex-col md:flex-row flex items-center justify-center gap-20">
-            {Vedio.map((val, index) => (
-              <FeatureCard key={index} FeatureName={val.Name} />
-            ))}
-          </div>
-        </section> */}
+  {/* Decorative Blur Background */}
+  <div className="absolute -top-20 -left-20 w-72 h-72 bg-blue-200 rounded-full blur-3xl opacity-30"></div>
+  <div className="absolute -bottom-20 -right-20 w-72 h-72 bg-purple-200 rounded-full blur-3xl opacity-30"></div>
+
+  {/* Heading */}
+  <div className={`text-center mb-16 relative z-10 ${inter.className}`}>
+    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
+      Our <span className="text-blue-600">Features</span>
+    </h2>
+    <p className="text-gray-500 mt-4 max-w-2xl mx-auto text-lg">
+      Powerful tools designed to simplify your property buying,
+      selling, and renting experience.
+    </p>
+  </div>
+
+  {/* Feature Grid */}
+  <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+    {Vedio.map((val, index) => (
+      <div
+        key={index}
+        className="group bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 border border-gray-100 hover:-translate-y-2"
+      >
+        {/* Icon Circle (Optional Placeholder) */}
+        <div className=" flex items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-6 group-hover:scale-110 transition">
+          <video src="./Feature/budget.mp4" autoPlay loop muted></video>
+        </div>
+
+        {/* Feature Title */}
+        <h3 className="text-xl font-semibold text-gray-900 mb-3">
+          {val.Name}
+        </h3>
+
+        {/* Description Placeholder */}
+        <p className="text-gray-500 text-sm leading-relaxed">
+          Smart AI-driven tools to enhance your real estate decisions and provide verified property insights.
+        </p>
+      </div>
+    ))}
+  </div>
+</section>
+   <p className={`${inter.className} text-center mb-2 text-gray-500`}> @2026 Property Verified</p>
       </div>
     </>
   );
