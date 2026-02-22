@@ -4,7 +4,7 @@ import { Search , ArrowLeft , ChevronRightIcon} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Nav from '@/components/layout/nav'
 import PartnerOnboarding from '@/components/layout/refer-leadform'
-import inter from '@/lib/font/Inter'
+import {inter} from '@/lib/font/Inter'
 
 function page() {
   return (

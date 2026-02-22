@@ -19,7 +19,7 @@ import {
   Trash2,
 } from "lucide-react";
 import React from "react";
-import inter from "@/lib/font/Inter";
+import {inter} from "@/lib/font/Inter";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";

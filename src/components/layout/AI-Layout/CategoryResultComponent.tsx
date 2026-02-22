@@ -1,5 +1,5 @@
 import RecommandationCard from '@/components/shared/recommdationCard';
-import inter from '@/lib/font/Inter';
+import {inter} from '@/lib/font/Inter';
 import { Star, Users } from 'lucide-react';
 import React from 'react'
 

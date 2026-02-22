@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import inter from "@/lib/font/Inter";
+import {inter} from "@/lib/font/Inter";
 import OrderCard from "../shared/orderCard";
 import { ChevronRight, Search } from "lucide-react";
 import axios from "axios";

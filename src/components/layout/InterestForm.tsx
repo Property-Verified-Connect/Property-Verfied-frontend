@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { getCookieValue } from '@/function/cookies';
-import inter from '@/lib/font/Inter';
+import {inter} from '@/lib/font/Inter';
 import toast from 'react-hot-toast';
 
 

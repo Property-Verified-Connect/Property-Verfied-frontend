@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import inter from "@/lib/font/Inter";
+import {inter} from "@/lib/font/Inter";
 import { getCookieValue } from "@/function/cookies";
 import { Skeleton } from "../ui/skeleton";
 import ReferCard from "../shared/refer-pro-card";

@@ -12,7 +12,7 @@ import {
   Building2,
   ParkingMeter,
 } from "lucide-react";
-import inter from "@/lib/font/Inter";
+import {inter} from "@/lib/font/Inter";
 import axios from "axios";
 import {
   Dialog,

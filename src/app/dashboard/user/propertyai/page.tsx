@@ -19,7 +19,7 @@ import {
   Circle,
   Lightbulb,
 } from "lucide-react";
-import inter from "@/lib/font/Inter";
+import {inter} from "@/lib/font/Inter";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import conversationFlows from "@/function/conversationFlow";
