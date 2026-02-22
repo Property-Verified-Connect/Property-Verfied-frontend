@@ -1,7 +1,7 @@
 "use client"
 import Nav from '@/components/layout/nav';
 import { Button } from '@/components/ui/button';
-import inter from '@/lib/font/Inter';
+import {inter} from '@/lib/font/Inter';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 
