@@ -6,6 +6,11 @@ import ImageSlider2 from "../shared/ImageSlider";
 import Link from "next/link";
 
 export default function PropertyHero() {
+   
+  const user = localStorage.getItem("userdata")
+
+
+
   return (
     <div className="w-full min-h-screen bg-white">
 
@@ -27,12 +32,23 @@ export default function PropertyHero() {
               A great platform to buy, sell, or even rent your properties
               without any commissions.
             </p>
+
+            {
+              user ? 
+                  <Link href={"/dashboard/user"}>
+    
+            <button className="bg-[#2395C5] hover:bg-white  hover:text-black hover:border-2 hover:border-gray-300 text-white px-6 py-3 rounded-lg transition duration-300 shadow-md">
+              Go to Dashboard →
+            </button>
+    </Link>
+              : 
     <Link href={"/dashboard/auth/login"}>
     
             <button className="bg-[#2395C5] hover:bg-white  hover:text-black hover:border-2 hover:border-gray-300 text-white px-6 py-3 rounded-lg transition duration-300 shadow-md">
               Browse Properties →
             </button>
     </Link>
+            }
           </div>
         </div>
       </section>
