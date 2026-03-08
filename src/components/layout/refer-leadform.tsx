@@ -166,7 +166,7 @@ export default function PartnerOnboarding() {
   const fetchCustomerLeads = async () => {
     try {
       setLeadsLoading(true);
-      const res = await axios.get(`${BASEURL}/api/refer/getAllApprovedLead`, {
+      const res = await axios.get(`${BASEURL}/api/refer/getUserApprovedLead`, {
         headers: {
           "Authorization": `Bearer ${getCookieValue()}`,
           "Content-Type": "application/json",
@@ -174,7 +174,7 @@ export default function PartnerOnboarding() {
       });
 
        console.log(res)
-      setCustomerLeads(res.data.leads || []);
+      setCustomerLeads(res.data.customer_leads || []);
     } catch (error) {
       console.error("Error fetching customer leads:", error);
       setCustomerLeads([]);
@@ -413,9 +413,9 @@ export default function PartnerOnboarding() {
                 <Skeleton className='h-30 w-full' />
                 <Skeleton className='h-30 w-full' />
               </div>
-            ) : customer_leads.length > 0 ? (
-              customer_leads.map((p, i) => (
-                <ReferCard key={p.id || i} lead={p} />
+            ) : customerLeads.length > 0 ? (
+             customerLeads.map((p, i) => (
+                <ReferCard key={i} lead={p} />
               ))
             ) : (
               <div className='text-center py-10'>

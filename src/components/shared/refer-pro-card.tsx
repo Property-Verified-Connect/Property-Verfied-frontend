@@ -25,6 +25,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import StatusTimeline from "./statusline";
 import toast from "react-hot-toast";
+import StatusTimeline2 from "./status-timeline";
+import { Badge } from "../ui/badge";
  // optional but good for feedback
 
 function ReferCard({ lead }) {
@@ -44,22 +46,7 @@ function ReferCard({ lead }) {
     window.open(url, "_blank");
   };
 
-  const handleLeadApproval = async (id) => {
-    try {
-      setLoading(true);
-    //   const response = await axios.post(`${BASEURL}/api/refer/setCustomerleadtoApproval`, { id }); // change API path if needed
-        openWhatsApp(lead.contact_number) 
-    toast.success("Lead approved successfully!");
-    //   console.log("Response:", response.data);
-      window.location.reload()
-    } catch (error) {
-      console.error("Error approving lead:", error);
-      toast.error("Failed to approve lead");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -140,12 +127,15 @@ function ReferCard({ lead }) {
            
              
             </div>
+      <div className="bg-white p-2 rounded-2xl mt-2">
+        {/* <StatusTimeline status={"approved"}/> */}
+        <StatusTimeline2 status={lead.status}/>
+      </div>
           </motion.div>
         )}
+
+        <Badge className="mt-2"> {lead.status}</Badge>
       </AnimatePresence>
-      <div className="bg-white p-2 rounded-2xl mt-2">
-        <StatusTimeline status={"approved"}/>
-      </div>
     </motion.div>
   );
 }
