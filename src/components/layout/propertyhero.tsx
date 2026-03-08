@@ -4,11 +4,15 @@ import {inter, poppins} from "@/lib/font/Inter";
 import Image from "next/image";
 import ImageSlider2 from "../shared/ImageSlider";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function PropertyHero() {
-   
-  const user = localStorage.getItem("userdata")
+const [user, setUser] = useState(null);
 
+useEffect(() => {
+  const userData = localStorage.getItem("userdata");
+  setUser(userData);
+}, []);
 
 
   return (
